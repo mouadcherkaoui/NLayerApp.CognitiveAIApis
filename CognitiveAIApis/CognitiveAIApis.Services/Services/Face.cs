@@ -9,18 +9,31 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
+using CognitiveAIApis.Services.Models;
+using System.Security;
 
 namespace CognitiveAIApis.Services
 {
     public class FaceApis
     {
 
-        private const string ApiUri = "https://westus.api.cognitive.microsoft.com";
-        private const string SubscriptionKey = "8cf15696a50e46d6b5c8b8d14fabeec6";
-        private const string Version = "v1.0";
-        private const string Text = "The food was delicious and there were wonderful staff.";
-        private const string imageFilePath = "Images/image.jpg";
-        public static async Task<object> DetectFaces(object objectToProcess = null)
+        private readonly string _endpointUri;
+        private readonly string _version;
+        private readonly string _subscriptionKey;
+
+        public FaceApis(string endpointUri, string version, string subscriptionKey)
+        {
+            _endpointUri = endpointUri;
+            _version = version;
+            _subscriptionKey = subscriptionKey;
+        }
+
+        public FaceApis(ApiCredential credential): this(credential.Endpoint, credential.Version, credential.SubscriptionKey)
+        {
+
+        }
+        public async Task<object> DetectFacesAsync(object objectToProcess, Dictionary<string, string> parameters = null)
         {
             using (FileStream fileStream = new FileStream(((dynamic)objectToProcess).imageFilePath, FileMode.Open, FileAccess.Read))
             {
@@ -29,7 +42,7 @@ namespace CognitiveAIApis.Services
 
                 var requestDictionary = new Dictionary<string, object>()
                 {
-                    { "EndpointUri", $"{ApiUri}/face" },
+                    { "EndpointUri", $"{_endpointUri}/face" },
                     { "Version", "v1.0" },
                     { "Method", "POST" },
                     { "RequestObject", bytes },
@@ -37,34 +50,30 @@ namespace CognitiveAIApis.Services
                     { "Headers",
                         new Dictionary<string, string>
                         {
-                            { "Ocp-Apim-Subscription-Key", SubscriptionKey },
+                            { "Ocp-Apim-Subscription-Key", _subscriptionKey },
                             { "ContentType", "application/octet-stream" },
                             { "Accept", "application/json" }
                         }
                     },
-                    { "Parameters",
+                    { "Parameters", 
                         new Dictionary<string, string>()
                         {
                             { "returnRecognitionModel", "true" }
                         }
-                    },
-                    { "PostRequestAction", GetPostStreamRequestAction<byte[]>() },
-                    { "PreRequestAction",  GetPreRequestAction<List<DetectedFace>>()}
+                    }
 
                 };
 
                 return await RequestProcessor
-                        .ProcessRequest(
-                            requestDictionary,
-                            GetPostStreamRequestAction<byte[]>(),
-                            GetPreRequestAction<List<DetectedFace>>()); 
+                        .ProcessRequest<byte[], List<DetectedFace>>(
+                            requestDictionary); 
             }
         }
-        public static async Task<object> DetectFacesWithUrl(object objectToProcess = null)
+        public async Task<object> DetectFacesFromUrlAsync(object objectToProcess, Dictionary<string, string> parameters = null)
         {
             var requestDictionary = new Dictionary<string, object>()
                 {
-                    { "EndpointUri", $"{ApiUri}/face" },
+                    { "EndpointUri", $"{_endpointUri}/face" },
                     { "Version", "v1.0" },
                     { "Method", "POST" },
                     { "RequestObject", objectToProcess },
@@ -72,7 +81,7 @@ namespace CognitiveAIApis.Services
                     { "Headers",
                         new Dictionary<string, string>
                         {
-                            { "Ocp-Apim-Subscription-Key", SubscriptionKey },
+                            { "Ocp-Apim-Subscription-Key", _subscriptionKey },
                             { "ContentType", "application/json" },
                             { "Accept", "application/json" }
                         }
@@ -88,17 +97,15 @@ namespace CognitiveAIApis.Services
                 };
             return
                 await RequestProcessor
-                    .ProcessRequest(
-                        requestDictionary,
-                        GetPostRequestAction<object>(),
-                        GetPreRequestAction<List<DetectedFace>>()); 
+                    .ProcessRequest<object, List<DetectedFace>>(
+                        requestDictionary); 
         }
 
-        public static async Task<List<DetectedFace>> DetectFacesWithUrlAsync(object objectToProcess = null)
+        public async Task<List<DetectedFace>> DetectFacesWithUrlAsync(object objectToProcess, Dictionary<string, string> parameters = null)
         {
             var requestDictionary = new Dictionary<string, object>()
                 {
-                    { "EndpointUri", $"{ApiUri}/face" },
+                    { "EndpointUri", $"{_endpointUri}/face" },
                     { "Version", "v1.0" },
                     { "Method", "POST" },
                     { "RequestObject", objectToProcess },
@@ -106,7 +113,7 @@ namespace CognitiveAIApis.Services
                     { "Headers",
                         new Dictionary<string, string>
                         {
-                            { "Ocp-Apim-Subscription-Key", SubscriptionKey },
+                            { "Ocp-Apim-Subscription-Key", _subscriptionKey },
                             { "ContentType", "application/json" },
                             { "Accept", "application/json" }
                         }
@@ -126,38 +133,5 @@ namespace CognitiveAIApis.Services
                         requestDictionary);
         }
 
-        private static Func<TRequest, HttpRequestMessage> GetPostRequestAction<TRequest>()
-        {
-            return new Func<TRequest, HttpRequestMessage>((request) =>
-            {
-                var json = JsonConvert.SerializeObject(request);
-                var byteArrayContent = new ByteArrayContent(Encoding.UTF8.GetBytes(json));
-                var requestMessage = new HttpRequestMessage() { Content = byteArrayContent };
-
-                return requestMessage;
-            });
-        }
-        private static Func<TRequest, HttpRequestMessage> GetPostStreamRequestAction<TRequest>()
-        {
-            return (request) =>
-            {
-                var bytes = request as byte[];
-                var byteArrayContent = new ByteArrayContent(bytes);
-                byteArrayContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-                var requestMessage = new HttpRequestMessage() { Content = byteArrayContent };
-                
-                return requestMessage;
-            };
-        }
-
-        private static Func<HttpResponseMessage, TResponse> GetPreRequestAction<TResponse>()
-        {
-            return new Func<HttpResponseMessage, TResponse>((responseMessage) =>
-            {
-                var jsonContent = responseMessage.Content.ReadAsStringAsync().Result;
-                var resultToReturn = JsonConvert.DeserializeObject<TResponse>(jsonContent);
-                return resultToReturn;
-            });
-        }
     }
 }

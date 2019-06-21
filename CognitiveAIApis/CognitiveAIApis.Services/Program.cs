@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using CognitiveAIApis.Infrastructure;
 using static CognitiveAIApis.Services.CustomVisionApis;
 using CognitiveAIApis.Models.CustomVision;
+using CognitiveAIApis.Services.Models;
 
 namespace CognitiveAIApis.Services
 {
@@ -29,6 +30,9 @@ namespace CognitiveAIApis.Services
 
         static void Main(string[] args)
         {
+            var credential = new ApiCredential { Endpoint = faceEndpoint, Version = "v1.0", SubscriptionKey = subscriptionKey };
+            var faceApis = new FaceApis(credential);
+            faceApis.DetectFacesAsync(new { imageFilePath = localImagePath }).Wait();
             var result = CreateProjectAsync(new { name = "testProject"}).Result;
             dynamic tagResult0 = CreateTagAsync(new { projectId = result.id, tagName = "fork" }).Result;
             dynamic tagResult1 = CreateTagAsync(new { projectId = result.id, tagName = "scissor" }).Result;

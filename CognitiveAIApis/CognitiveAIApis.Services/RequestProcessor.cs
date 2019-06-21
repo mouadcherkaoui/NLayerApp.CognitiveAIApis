@@ -10,14 +10,6 @@ namespace CognitiveAIApis.Services
 {
     public class RequestProcessor
     {
-        public static async Task<TResult> ProcessRequest<TRequest, TResult>(ApiRequest<TRequest> request, 
-            Func<HttpResponseMessage, TResult> preRequestAction = null, 
-            Func<TRequest, HttpRequestMessage> postRequestAction = null) 
-        {
-            var requestHandler = new ApiRequestHandler<TRequest, TResult>(request, postRequestAction, preRequestAction);
-            return await requestHandler.HandleRequestAsync();
-        }
-
         public static async Task<TResult> ProcessRequest<TRequest, TResult>(ApiCallCommand<TRequest, TResult> request,
             Func<HttpResponseMessage, TResult> preRequestAction = null,
             Func<TRequest, HttpRequestMessage> postRequestAction = null)
