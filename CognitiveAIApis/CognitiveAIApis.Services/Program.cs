@@ -20,8 +20,8 @@ namespace CognitiveAIApis.Services
     {
         private const string subscriptionKey = "8cf15696a50e46d6b5c8b8d14fabeec6";
 
-        private const string faceEndpoint =
-            "https://westus.api.cognitive.microsoft.com";
+        private const string _endpoint =
+            "https://westus2.api.cognitive.microsoft.com/";
 
         private const string localImagePath = @"Images/image.jpg";
 
@@ -30,12 +30,12 @@ namespace CognitiveAIApis.Services
 
         static void Main(string[] args)
         {
-            var credential = new ApiCredential { Endpoint = faceEndpoint, Version = "v1.0", SubscriptionKey = subscriptionKey };
-            var faceApis = new FaceApis(credential);
-            faceApis.DetectFacesAsync(new { imageFilePath = localImagePath }).Wait();
-            var result = CreateProjectAsync(new { name = "testProject"}).Result;
-            dynamic tagResult0 = CreateTagAsync(new { projectId = result.id, tagName = "fork" }).Result;
-            dynamic tagResult1 = CreateTagAsync(new { projectId = result.id, tagName = "scissor" }).Result;
+            var credential = new ApiCredential { Endpoint = _endpoint, Version = "v3.0", SubscriptionKey = subscriptionKey };
+            var visionApis = new CustomVisionApis(credential);
+            var result = visionApis.CreateProjectAsync(new { name = "testProject"}).Result;
+            dynamic tagResult0 = visionApis.CreateTagAsync(new { projectId = result.id, tagName = "fork" }).Result;
+            dynamic tagResult1 = visionApis.CreateTagAsync(new { projectId = result.id, tagName = "scissor" }).Result;
+
             var requestObject = new CreateImagesRequest()
             {
                 images = new List<ImageUrl>
@@ -152,11 +152,11 @@ namespace CognitiveAIApis.Services
                     }
                 }
             };
-            var createImagesResult = CreateImagesFromUrlsAsync(new { projectId = result.id, images = requestObject.images }).Result;
-            var trainingResult = TrainProjectAsync(new { projectId = result.id }).Result;
-            var iterations = GetIterations(new { projectId = result.id }).Result;
-            var updateIterationResult = UpdateIteration(new { projectId = result.id, iterationId = iterations[0].id, iteration = new { isDefault=true } }).Result;
-            var quicktest = QuickTestImageWithUrlAsync(iterations[0].id, result.id, new { url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/scissors/scissors_15.jpg?raw=true" }).Result;
+            var createImagesResult = visionApis.CreateImagesFromUrlsAsync(new { projectId = result.id, images = requestObject.images }).Result;
+            var trainingResult = visionApis.TrainProjectAsync(new { projectId = result.id }).Result;
+            var iterations = visionApis.GetIterations(new { projectId = result.id }).Result;
+            var updateIterationResult = visionApis.UpdateIteration(new { projectId = result.id, iterationId = iterations[0].id, iteration = new { isDefault=true } }).Result;
+            var quicktest = visionApis.QuickTestImageWithUrlAsync(iterations[0].id, result.id, new { url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/scissors/scissors_15.jpg?raw=true" }).Result;
         }
 
         static async Task WaitCallLimitPerSecondAsync()

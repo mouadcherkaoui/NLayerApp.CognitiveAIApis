@@ -4,7 +4,10 @@ using System.Text;
 
 namespace CognitiveAIApis.Services.Models
 {
-    class ApiCredential
+    public class ApiCredential
     {
+        public string Endpoint { get; set; }
+        public string Version { get; set; }
+        public string SubscriptionKey { get; set; }
     }
 }

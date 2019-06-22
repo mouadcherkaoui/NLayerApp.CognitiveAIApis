@@ -8,243 +8,201 @@ using System.Threading.Tasks;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
 using Newtonsoft.Json;
 using CognitiveAIApis.Infrastructure;
+using CognitiveAIApis.Services.Models;
+using System.Linq;
 
 namespace CognitiveAIApis.Services
 {
     public class ComputerVisionApis
     {
-        private const string ApiUri = "https://westus.api.cognitive.microsoft.com";
-        private const string SubscriptionKey = "8cf15696a50e46d6b5c8b8d14fabeec6";
-        private const string Version = "v2.0";
-        private const string imageFilePath = "Images/image.jpg";
-        public static async Task<object> AnalyzeImage(object objectToProcess = null)
+        private readonly string _endpointUri = "https://westus.api.cognitive.microsoft.com";
+        private readonly string _subscriptionKey = "8cf15696a50e46d6b5c8b8d14fabeec6";
+        private readonly string _version = "v2.0";
+        private readonly Dictionary<string, string> _headers;
+
+        public ComputerVisionApis(string endpointUri, string version, string subscriptionKey, string trainingKey)
+        {
+            _endpointUri = $"{endpointUri}/vision";
+            _version = version;
+            _subscriptionKey = subscriptionKey;
+            _headers = new Dictionary<string, string>
+                        {
+                            { "Ocp-Apim-Subscription-Key", _subscriptionKey},
+                            { "Training-Key", trainingKey ?? "" },
+                            { "Accept", "application/json" }
+                        };
+        }
+        public ComputerVisionApis(ApiCredential credential): this(credential.Endpoint, credential.Version, credential.SubscriptionKey, "")
+        {
+        }
+
+        public async Task<object> AnalyzeImage(dynamic objectToProcess = null, 
+            Dictionary<string, string> parameters = null)
         {
             using (FileStream fileStream = new FileStream(((dynamic)objectToProcess).imageFilePath, FileMode.Open, FileAccess.Read))
             {
                 BinaryReader binaryReader = new BinaryReader(fileStream);
                 var bytes = binaryReader.ReadBytes((int)fileStream.Length);
 
-                var request = new ApiRequest<byte[]>()
+                var requestDictionary = new Dictionary<string, object>()
                 {
-                    BaseAddress = $"{ApiUri}/vision",
-                    SubscriptionKey = SubscriptionKey,
-                    Method = new HttpMethod("POST"),
-                    Path = "",
-                    Service = "analyze",
-                    Version = Version,
-                    Request = bytes,
-                    Headers = new Dictionary<string, string>()
-                            {
-                                { "Ocp-Apim-Subscription-Key", SubscriptionKey },
-                                { "ContentType", "application/octet-stream" },
-                                { "Accept", "application/json" }
-                            },
-                    QueryParameters = new Dictionary<string, string>()
-                    {
-                        { "returnRecognitionModel", "true" }
-                    }
+                    { "Endpoint_Uri", $"{_endpointUri}" },
+                    { "Endpoint_Version", _version },
+                    { "Operation_Method", "POST" },
+                    { "Operation_Path", "analyze" },
+                    { "Operation_SubPath", "" },
+                    { "Headers", _headers
+                        .Append(new KeyValuePair<string, string> ("ContentType", "application/octet-stream"))
+                        .ToDictionary(kv => kv.Key, kv => kv.Value) },
+                    { "Parameters",
+                        new Dictionary<string, string>()
+                        {
+                            { "recognitionModel", "true" }
+                        }
+                    },
+                    { "RequestObject", bytes }
                 };
 
-                return await RequestProcessor.ProcessRequest<byte[], object>(request);
+                return await RequestProcessor.ProcessRequest<byte[], object>(requestDictionary);
             }
         }
-        public static async Task<object> AnalyzeImageWithUrl(object objectToProcess = null)
+        public async Task<object> AnalyzeImageWithUrl(object objectToProcess = null)
         {
-            var request = new ApiRequest<object>()
-            {
-                BaseAddress = $"{ApiUri}/vision",
-                SubscriptionKey = SubscriptionKey,
-                Method = new HttpMethod("POST"),
-                Path = "",
-                Service = "analyze",
-                Version = Version,
-                Request = objectToProcess,
-                Headers = new Dictionary<string, string>()
-                        {
-                            { "Ocp-Apim-Subscription-Key", SubscriptionKey },
-                            { "ContentType", "application/json" },
-                            { "Accept", "application/json" }
-                        },
-                QueryParameters = new Dictionary<string, string>()
+            var requestDictionary = new Dictionary<string, object>()
                 {
-                    { "returnRecognitionModel", "true" },
-                    { "details", "Celebrities" }
-                }
-            };
+                    { "Endpoint_Uri", $"{_endpointUri}" },
+                    { "Endpoint_Version", _version },
+                    { "Operation_Method", "POST" },
+                    { "Operation_Path", "analyze" },
+                    { "Operation_SubPath", "" },
+                    { "Headers", _headers
+                        .Append(new KeyValuePair<string, string> ("ContentType", "application/json"))
+                        .ToDictionary(kv => kv.Key, kv => kv.Value) },
+                    { "Parameters",
+                        new Dictionary<string, string>()
+                        {
+                            { "recognitionModel", "true" }
+                        }
+                    },
+                    { "RequestObject", objectToProcess }
+                };
+            
 
-            return await RequestProcessor.ProcessRequest<object, object>(request);
+            return await RequestProcessor.ProcessRequest<object, object>(requestDictionary);
         }
 
-        public static async Task<object> DescribeImage(object objectToProcess = null)
+        public async Task<object> DescribeImage(dynamic objectToProcess = null)
         {
-            using (FileStream fileStream = new FileStream(((dynamic)objectToProcess).imageFilePath, FileMode.Open, FileAccess.Read))
+            using (FileStream fileStream = new FileStream(objectToProcess.imageFilePath, FileMode.Open, FileAccess.Read))
             {
                 BinaryReader binaryReader = new BinaryReader(fileStream);
                 var bytes = binaryReader.ReadBytes((int)fileStream.Length);
 
-                var request = new ApiRequest<byte[]>()
+                var requestDictionary = new Dictionary<string, object>()
                 {
-                    BaseAddress = $"{ApiUri}/vision",
-                    SubscriptionKey = SubscriptionKey,
-                    Method = new HttpMethod("POST"),
-                    Path = "",
-                    Service = "describe",
-                    Version = Version,
-                    Request = bytes,
-                    Headers = new Dictionary<string, string>()
-                            {
-                                { "Ocp-Apim-Subscription-Key", SubscriptionKey },
-                                { "ContentType", "application/octet-stream" },
-                                { "Accept", "application/json" }
-                            }
+                    { "Endpoint_Uri", $"{_endpointUri}" },
+                    { "Endpoint_Version", _version },
+                    { "Operation_Method", "POST" },
+                    { "Operation_Path", "describe" },
+                    { "Operation_SubPath", "" },
+                    { "Headers", _headers
+                        .Append(new KeyValuePair<string, string> ("ContentType", "application/octet-stream"))
+                        .ToDictionary(kv => kv.Key, kv => kv.Value) },
+                    { "Parameters",
+                        new Dictionary<string, string>()
+                        {
+                            { "recognitionModel", "true" }
+                        }
+                    },
+                    { "RequestObject", bytes }
                 };
 
-                return await RequestProcessor.ProcessRequest<byte[], object>(request);
+                return await RequestProcessor.ProcessRequest<byte[], object>(requestDictionary);
             }
         }
-        public static async Task<object> DescribeImageWithUrl(object objectToProcess = null)
+        public async Task<object> DescribeImageWithUrl(object objectToProcess = null)
         {
-            var request = new ApiCallCommand<object, ImageAnalysis>(objectToProcess)
-            {
-                Endpoint_Uri = $"{ApiUri}/vision",
-                SubscriptionKey = SubscriptionKey,
-                Operation_Method = "POST",
-                Operation_Path = "describe",
-                Endpoint_Version = Version,
-                Headers = new Dictionary<string, string>()
-                        {
-                            { "Ocp-Apim-Subscription-Key", SubscriptionKey },
-                            { "ContentType", "application/json" },
-                            { "Accept", "application/json" }
-                        }
-            };
-
-            var postRequestAction = new Func<object, HttpRequestMessage>((o) =>
-            {
-                var json = JsonConvert.SerializeObject(o);
-                var byteArrayContent = new ByteArrayContent(Encoding.UTF8.GetBytes(json));
-                var requestMessage = new HttpRequestMessage() { Content = byteArrayContent };
-
-                return requestMessage;
-            });
-
-            var preRequestAction = new Func<HttpResponseMessage, ImageAnalysis>((response) =>
-            {
-                var jsonContent = response.Content.ReadAsStringAsync().Result;
-                var resultToReturn = JsonConvert.DeserializeObject<ImageAnalysis>(jsonContent);
-                return resultToReturn;
-            });
-            return await RequestProcessor.ProcessRequest(request, preRequestAction, postRequestAction);
-        }
-
-        public static async Task<object> DetectObjectsWithUrl(object objectToProcess = null)
-        {
-            var request = new ApiCallCommand<object, DetectResult>(objectToProcess)
-            {
-                Endpoint_Uri = $"{ApiUri}/vision",
-                SubscriptionKey = SubscriptionKey,
-                Operation_Method = "POST",
-                Operation_Path = "detect",
-                Endpoint_Version = Version,
-                Headers = new Dictionary<string, string>()
-                        {
-                            { "Ocp-Apim-Subscription-Key", SubscriptionKey },
-                            { "ContentType", "application/json" },
-                            { "Accept", "application/json" }
-                        }
-            };
-
-            var postRequestAction = new Func<object, HttpRequestMessage>((o) =>
-            {
-                var json = JsonConvert.SerializeObject(o);
-                var byteArrayContent = new ByteArrayContent(Encoding.UTF8.GetBytes(json));
-                var requestMessage = new HttpRequestMessage() { Content = byteArrayContent };
-
-                return requestMessage;
-            });
-
-            var preRequestAction = new Func<HttpResponseMessage, DetectResult>((response) =>
-            {
-                var jsonContent = response.Content.ReadAsStringAsync().Result;
-                var resultToReturn = JsonConvert.DeserializeObject<DetectResult>(jsonContent);
-                return resultToReturn;
-            });
-            return await RequestProcessor.ProcessRequest<object, DetectResult>(request, preRequestAction, postRequestAction);
-        }
-
-        public static async Task<object> GetAreaOfInterestWithUrl(object objectToProcess = null)
-        {
-            var request = new ApiCallCommand<object, AreaOfInterestResult>(objectToProcess)
-            {
-                Endpoint_Uri = $"{ApiUri}/vision",
-                SubscriptionKey = SubscriptionKey,
-                Operation_Method = "POST",
-                Operation_Path = "areaOfInterest",
-                Endpoint_Version = Version,
-                Headers = new Dictionary<string, string>()
-                        {
-                            { "Ocp-Apim-Subscription-Key", SubscriptionKey },
-                            { "ContentType", "application/json" },
-                            { "Accept", "application/json" }
-                        }
-            };
-
-            var postRequestAction = new Func<object, HttpRequestMessage>((o) =>
-            {
-                var json = JsonConvert.SerializeObject(o);
-                var byteArrayContent = new ByteArrayContent(Encoding.UTF8.GetBytes(json));
-                var requestMessage = new HttpRequestMessage() { Content = byteArrayContent };
-
-                return requestMessage;
-            });
-
-            var preRequestAction = new Func<HttpResponseMessage, AreaOfInterestResult>((response) =>
-            {
-                var jsonContent = response.Content.ReadAsStringAsync().Result;
-                var resultToReturn = JsonConvert.DeserializeObject<AreaOfInterestResult>(jsonContent);
-                return resultToReturn;
-            });
-            return await RequestProcessor.ProcessRequest<object, AreaOfInterestResult>(request, preRequestAction, postRequestAction);
-        }
-
-        public static async Task<object> RecognizeTextWithUrl(object objectToProcess = null)
-        {
-            var request = new ApiCallCommand<object, TextRecognitionResult>(objectToProcess)
-            {
-                Endpoint_Uri = $"{ApiUri}/vision",
-                SubscriptionKey = SubscriptionKey,
-                Operation_Method = "POST",
-                Operation_Path = "recognizeText",
-                Endpoint_Version = Version,
-                Headers = new Dictionary<string, string>()
-                        {
-                            { "Ocp-Apim-Subscription-Key", SubscriptionKey },
-                            { "ContentType", "application/json" },
-                            { "Accept", "application/json" }
-                        },
-                Parameters = new Dictionary<string, string>()
+            var requestDictionary = new Dictionary<string, object>()
                 {
-                    { "mode", "Printed" }
-                }
-            };
+                    { "Endpoint_Uri", $"{_endpointUri}" },
+                    { "Endpoint_Version", _version },
+                    { "Operation_Method", "POST" },
+                    { "Operation_Path", "describe" },
+                    { "Operation_SubPath", "" },
+                    { "Headers", _headers
+                        .Append(new KeyValuePair<string, string> ("ContentType", "application/json"))
+                        .ToDictionary(kv => kv.Key, kv => kv.Value) },
+                    { "Parameters",
+                        new Dictionary<string, string>()
+                        {
+                            { "recognitionModel", "true" }
+                        }
+                    },
+                    { "RequestObject", objectToProcess }
+                };
 
-            var postRequestAction = new Func<object, HttpRequestMessage>((o) =>
-            {
-                var json = JsonConvert.SerializeObject(o);
-                var byteArrayContent = new ByteArrayContent(Encoding.UTF8.GetBytes(json));
-                var requestMessage = new HttpRequestMessage() { Content = byteArrayContent };
+            return await RequestProcessor.ProcessRequest<byte[], object>(requestDictionary);
+        }
 
-                return requestMessage;
-            });
+        public async Task<object> DetectObjectsWithUrl(object objectToProcess = null,
+            Dictionary<string, string> parameters = null)
+        {
+            var requestDictionary = new Dictionary<string, object>()
+                {
+                    { "Endpoint_Uri", $"{_endpointUri}" },
+                    { "Endpoint_Version", _version },
+                    { "Operation_Method", "POST" },
+                    { "Operation_Path", "detect" },
+                    { "Operation_SubPath", "" },
+                    { "Headers", _headers
+                        .Append(new KeyValuePair<string, string> ("ContentType", "application/json"))
+                        .ToDictionary(kv => kv.Key, kv => kv.Value) },
+                    { "Parameters", parameters},
+                    { "RequestObject", objectToProcess }
+                };
 
-            var preRequestAction = new Func<HttpResponseMessage, TextRecognitionResult>((response) =>
-            {
-                var jsonContent = response.Content.ReadAsStringAsync().Result;
-                var resultToReturn = JsonConvert.DeserializeObject<TextRecognitionResult>(jsonContent);
-                return resultToReturn;
-            });
+            return await RequestProcessor.ProcessRequest<object, object>(requestDictionary);
 
-            return await RequestProcessor.ProcessRequest<object, TextRecognitionResult>(request, preRequestAction, postRequestAction);
+        }
+
+        public async Task<object> GetAreaOfInterestWithUrl(object objectToProcess = null,
+            Dictionary<string, string> parameters = null)
+        {
+            var requestDictionary = new Dictionary<string, object>()
+                {
+                    { "Endpoint_Uri", $"{_endpointUri}" },
+                    { "Endpoint_Version", _version },
+                    { "Operation_Method", "POST" },
+                    { "Operation_Path", "areaOInterest" },
+                    { "Operation_SubPath", "" },
+                    { "Headers", _headers
+                        .Append(new KeyValuePair<string, string> ("ContentType", "application/json"))
+                        .ToDictionary(kv => kv.Key, kv => kv.Value) },
+                    { "Parameters", parameters},
+                    { "RequestObject", objectToProcess }
+                };
+
+            return await RequestProcessor.ProcessRequest<object, object>(requestDictionary);
+        }
+
+        public async Task<object> RecognizeTextWithUrl(object objectToProcess = null,
+            Dictionary<string, string> parameters = null)
+        {
+            var requestDictionary = new Dictionary<string, object>()
+                {
+                    { "Endpoint_Uri", $"{_endpointUri}" },
+                    { "Endpoint_Version", _version },
+                    { "Operation_Method", "POST" },
+                    { "Operation_Path", "recognizeText" },
+                    { "Operation_SubPath", "" },
+                    { "Headers", _headers
+                        .Append(new KeyValuePair<string, string> ("ContentType", "application/json"))
+                        .ToDictionary(kv => kv.Key, kv => kv.Value) },
+                    { "Parameters", parameters},
+                    { "RequestObject", objectToProcess }
+                };
+
+            return await RequestProcessor.ProcessRequest<object, object>(requestDictionary);
         }
 
     }

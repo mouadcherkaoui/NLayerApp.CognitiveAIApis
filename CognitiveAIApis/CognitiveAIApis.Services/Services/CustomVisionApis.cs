@@ -1,4 +1,6 @@
 ﻿using CognitiveAIApis.Models.CustomVision;
+using CognitiveAIApis.Services.Helpers;
+using CognitiveAIApis.Services.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -13,31 +15,42 @@ namespace CognitiveAIApis.Services
 {
     public class CustomVisionApis
     {
-        private const string ApiUri = "https://westus2.api.cognitive.microsoft.com/customvision";
-        private const string SubscriptionKey = "8cf15696a50e46d6b5c8b8d14fabeec6";
-        private const string Endpoint_Version = "v3.0";
-        private const string Service = "customvision";
-        private const string Text = "The food was delicious and there were wonderful staff.";
-        private const string imageFilePath = "Images/image.jpg";
+        private readonly string _endpointUri;
+        private readonly string _subscriptionKey;
+        private readonly string _version;
+        private readonly Dictionary<string, string> _headers;
 
-        private static readonly Dictionary<string, string> Headers = new Dictionary<string, string>
-                        {
-                            { "Ocp-Apim-Subscription-Key", SubscriptionKey},
-                            { "Training-Key", "5363dc26ffc645eaaf0c2e6af1d87dd4" },
-                            { "Accept", "application/json" }
-                        };
-        public static async Task<CreateProjectResult> CreateProjectAsync(object objectToProcess = null)
+
+        public CustomVisionApis(string endpointUri, string version, string subscriptionKey, string trainingKey = "5363dc26ffc645eaaf0c2e6af1d87dd4")
         {
-            var requestDictionary = new Dictionary<string, object>()
+            _endpointUri = $"{endpointUri}/customvision";
+            _version = version;
+            _subscriptionKey = subscriptionKey;
+
+            _headers = 
+                new Dictionary<string, string>
                 {
-                    { "Endpoint_Uri", $"{ApiUri}" },
-                    { "Endpoint_Version", Endpoint_Version },
+                    { "Ocp-Apim-Subscription-Key", _subscriptionKey},
+                    { "Accept", "application/json" }
+                }
+                .with("TrainingKey", trainingKey);
+        }
+
+        public CustomVisionApis(ApiCredential credential) : this(credential.Endpoint, credential.Version, credential.SubscriptionKey) { }
+
+        public async Task<CreateProjectResult> CreateProjectAsync(dynamic objectToProcess = null, 
+            Dictionary<string, string> parameters = null)
+        {
+            var requestDictionary = new ApiDictionary()
+                {
+                    { "Endpoint_Uri", $"{_endpointUri}" },
+                    { "Endpoint_Version", _version },
                     { "Operation_Method", "POST" },
                     { "Operation_Path", "training" },
                     { "Operation_SubPath", "projects" },
-                    { "Headers", Headers
-                        .Append(new KeyValuePair<string, string> ("ContentType", "application/json"))
-                        .ToDictionary(kv => kv.Key, kv => kv.Value) },
+                    { "Headers", _headers.with("ContentType", "application/json") }, 
+                        // .Append(new KeyValuePair<string, string> ("ContentType", "application/json")) // the with extension method is an abreviation of the two operations
+                        // .ToDictionary(kv => kv.Key, kv => kv.Value) },                                // of appending and reconverting the result back from IEnumerable to Dictionary
                     { "Parameters",
                         new Dictionary<string, string>()
                         {
@@ -59,19 +72,17 @@ namespace CognitiveAIApis.Services
                     .ProcessRequest<object, CreateProjectResult>(requestDictionary);
         }
 
-        public static async Task<CreateTagResult> CreateTagAsync(dynamic objectToProcess = null)
+        public async Task<CreateTagResult> CreateTagAsync(dynamic objectToProcess = null, 
+            Dictionary<string, string> parameters = null)
         {
             var requestDictionary = new Dictionary<string, object>()
                 {
-                    { "Endpoint_Uri", $"{ApiUri}" },
-                    { "Endpoint_Version", Endpoint_Version },
+                    { "Endpoint_Uri", $"{_endpointUri}" },
+                    { "Endpoint_Version", _version },
                     { "Operation_Method", "POST" },
                     { "Operation_Path", "training" },
                     { "Operation_SubPath", $"projects/{objectToProcess.projectId}/tags" },
-                    { "Headers", Headers
-                        .Append(new KeyValuePair<string, string> ("ContentType", "application/json"))
-                        .ToDictionary(kv => kv.Key, kv => kv.Value) 
-                    },
+                    { "Headers", _headers.with("ContentType", "application/json") },
                     { "Parameters",
                         new Dictionary<string, string>()
                         {
@@ -87,49 +98,17 @@ namespace CognitiveAIApis.Services
                         requestDictionary);
         }
 
-        public static async Task<CreateImagesResult> CreateImagesFromUrlsAsync(dynamic objectToProcess = null)
+        public async Task<CreateImagesResult> CreateImagesFromUrlsAsync(dynamic objectToProcess = null, 
+            Dictionary<string, string> parameters = null)
         {
             var requestDictionary = new Dictionary<string, object>()
                 {
-                    { "Endpoint_Uri", $"{ApiUri}" },
-                    { "Endpoint_Version", Endpoint_Version },
+                    { "Endpoint_Uri", $"{_endpointUri}" },
+                    { "Endpoint_Version", _version },
                     { "Operation_Method", "POST" },
                     { "Operation_Path", "training" },
                     { "Operation_SubPath", $"projects/{objectToProcess.projectId}/images/urls" },
-                    { "Headers", Headers
-                        .Append(new KeyValuePair<string, string> ("ContentType", "application/json"))
-                        .ToDictionary(kv => kv.Key, kv => kv.Value) 
-                    },
-                    { "Parameters",
-                        new Dictionary<string, string>()
-                        {
-                            { "name", "testTag" }
-                        }
-                    }, 
-                    { "RequestObject", objectToProcess }
-                };
-
-
-            return
-                await RequestProcessor
-                    .ProcessRequest<object, CreateImagesResult>(
-                        requestDictionary);
-        }
-
-        public static async Task<CreateImagesResult> CreateImagesAsync(dynamic objectToProcess = null)
-        {
-
-            var requestDictionary = new Dictionary<string, object>()
-                {
-                    { "Endpoint_Uri", $"{ApiUri}" },
-                    { "Endpoint_Version", Endpoint_Version },
-                    { "Operation_Method", "POST" },
-                    { "Operation_Path", "training" },
-                    { "Operation_SubPath", $"projects/{objectToProcess.projectId}/images/urls" },
-                    { "Headers", Headers
-                        .Append(new KeyValuePair<string, string> ("ContentType", "application/octet-stream"))
-                        .ToDictionary(kv => kv.Key, kv => kv.Value) 
-                    },
+                    { "Headers", _headers.with("ContentType", "application/json") },
                     { "Parameters",
                         new Dictionary<string, string>()
                         {
@@ -146,20 +125,46 @@ namespace CognitiveAIApis.Services
                         requestDictionary);
         }
 
-        public static async Task<TrainingResult> TrainProjectAsync(dynamic objectToProcess = null)
+        public async Task<CreateImagesResult> CreateImagesAsync(dynamic objectToProcess = null, 
+            Dictionary<string, string> parameters = null)
         {
 
             var requestDictionary = new Dictionary<string, object>()
                 {
-                    { "Endpoint_Uri", $"{ApiUri}" },
-                    { "Endpoint_Version", Endpoint_Version },
+                    { "Endpoint_Uri", $"{_endpointUri}" },
+                    { "Endpoint_Version", _version },
+                    { "Operation_Method", "POST" },
+                    { "Operation_Path", "training" },
+                    { "Operation_SubPath", $"projects/{objectToProcess.projectId}/images/urls" },
+                    { "Headers", _headers.with("ContentType", "application/octet-stream") },
+                    { "Parameters",
+                        new Dictionary<string, string>()
+                        {
+                            { "name", "testTag" }
+                        }
+                    },
+                    { "RequestObject", objectToProcess }
+                };
+
+
+            return
+                await RequestProcessor
+                    .ProcessRequest<object, CreateImagesResult>(
+                        requestDictionary);
+        }
+
+        public async Task<TrainingResult> TrainProjectAsync(dynamic objectToProcess = null, 
+            Dictionary<string, string> parameters = null)
+        {
+
+            var requestDictionary = new Dictionary<string, object>()
+                {
+                    { "Endpoint_Uri", $"{_endpointUri}" },
+                    { "Endpoint_Version", _version },
                     { "Operation_Method", "POST" },
                     { "Operation_Path", "training" },
                     { "Operation_SubPath", $"projects/{objectToProcess.projectId}/train" },
-                    { "Headers", Headers
-                        .Append(new KeyValuePair<string, string> ("ContentType", "application/json"))
-                        .ToDictionary(kv => kv.Key, kv => kv.Value) 
-                    },
+                    { "Headers", _headers.with("ContentType", "application/json") },
                     { "RequestObject", objectToProcess }
                 };
 
@@ -170,20 +175,18 @@ namespace CognitiveAIApis.Services
                         requestDictionary);
         }
 
-        public static async Task<List<Iteration>> GetIterations(dynamic objectToProcess = null)
+        public async Task<List<Iteration>> GetIterations(dynamic objectToProcess = null, 
+            Dictionary<string, string> parameters = null)
         {
 
             var requestDictionary = new Dictionary<string, object>()
                 {
-                    { "Endpoint_Uri", $"{ApiUri}" },
-                    { "Endpoint_Version", Endpoint_Version },
+                    { "Endpoint_Uri", $"{_endpointUri}" },
+                    { "Endpoint_Version", _version },
                     { "Operation_Method", "GET" },
                     { "Operation_Path", "training" },
                     { "Operation_SubPath", $"projects/{objectToProcess.projectId}/iterations" },
-                    { "Headers", Headers
-                        .Append(new KeyValuePair<string, string> ("ContentType", "application/json"))
-                        .ToDictionary(kv => kv.Key, kv => kv.Value) 
-                    },
+                    { "Headers", _headers.with("ContentType", "application/json") },
                     { "RequestObject", objectToProcess }
                 };
 
@@ -194,20 +197,18 @@ namespace CognitiveAIApis.Services
                         requestDictionary);
         }
 
-        public static async Task<object> UpdateIteration(dynamic objectToProcess = null)
+        public async Task<object> UpdateIteration(dynamic objectToProcess = null, 
+            Dictionary<string, string> parameters = null)
         {
 
             var requestDictionary = new Dictionary<string, object>()
                 {
-                    { "Endpoint_Uri", $"{ApiUri}" },
-                    { "Endpoint_Version", Endpoint_Version },
+                    { "Endpoint_Uri", $"{_endpointUri}" },
+                    { "Endpoint_Version", _version },
                     { "Operation_Method", "PATCH" },
                     { "Operation_Path", "training" },
                     { "Operation_SubPath", $"projects/{objectToProcess.projectId}/iterations/{objectToProcess.iterationId}" },
-                    { "Headers", Headers
-                        .Append(new KeyValuePair<string, string> ("ContentType", "application/json"))
-                        .ToDictionary(kv => kv.Key, kv => kv.Value) 
-                    },
+                    { "Headers", _headers.with("ContentType", "application/json") },
                     { "RequestObject", objectToProcess.iteration }
                 };
 
@@ -218,21 +219,20 @@ namespace CognitiveAIApis.Services
                         requestDictionary);
         }
 
-        public static async Task<QuickTestResult> QuickTestImageWithUrlAsync(string iterationId, string projectId, dynamic objectToProcess = null)
+        public async Task<QuickTestResult> QuickTestImageWithUrlAsync(string iterationId, string projectId, 
+            dynamic objectToProcess = null, 
+            Dictionary<string, string> parameters = null)
         {
 
             var requestDictionary = new Dictionary<string, object>()
                 {
-                    { "Endpoint_Uri", $"{ApiUri}" },
-                    { "Endpoint_Version", Endpoint_Version },
+                    { "Endpoint_Uri", $"{_endpointUri}" },
+                    { "Endpoint_Version", _version },
                     { "Operation_Method", "POST" },
                     { "Operation_Path", "training" },
                     { "Operation_SubPath", $"projects/{projectId}/quicktest/url" },
-                    { "Headers", Headers
-                        .Append(new KeyValuePair<string, string> ("ContentType", "application/json"))
-                        .ToDictionary(kv => kv.Key, kv => kv.Value) 
-                    },
-                    { "Parameters",
+                    { "Headers", _headers.with("ContentType", "application/json") },
+                    { "Parameters", 
                         new Dictionary<string, string>{
                             { "iterationId", iterationId }
                         }
@@ -247,82 +247,7 @@ namespace CognitiveAIApis.Services
                         requestDictionary);
         }
 
-        //public static async Task<object> DetectFacesWithUrlAsync(object objectToProcess = null)
-        //{
-        //    var requestDictionary = new Dictionary<string, object>()
-        //        {
-        //            { "Endpoint_Uri", $"{ApiUri}/face" },
-        //            { "Endpoint_Version", "v1.0" },
-        //            { "Operation_Method", "POST" },
-        //            { "RequestObject", objectToProcess },
-        //            { "Operation_Path", "detect" },
-        //            { "Headers",
-        //                new Dictionary<string, string>
-        //                {
-        //                    { "Ocp-Apim-Subscription-Key", SubscriptionKey },
-        //                    { "ContentType", "application/json" },
-        //                    { "Accept", "application/json" }
-        //                }
-        //            },
-        //            { "Parameters",
-        //                new Dictionary<string, string>()
-        //                {
-        //                    { "returnRecognitionModel", "true" }
-        //                }
-        //            }
 
-        //        };
 
-        //    return
-        //        await RequestProcessor
-        //            .ProcessRequest(
-        //                requestDictionary,
-        //                GetPostRequestAction<object>(),
-        //                GetPreRequestAction<List<DetectedFace>>());
-        //}
-        private static Func<TRequest, HttpRequestMessage> GetContentlessPostRequestAction<TRequest>()
-        {
-            return new Func<TRequest, HttpRequestMessage>((request) =>
-            {
-                var requestMessage = new HttpRequestMessage() {};
-
-                return requestMessage;
-            });
-        }
-
-        private static Func<TRequest, HttpRequestMessage> GetPostRequestAction<TRequest>()
-        {
-            return new Func<TRequest, HttpRequestMessage>((request) =>
-            {
-                var json = JsonConvert.SerializeObject(request);
-                var byteArrayContent = new ByteArrayContent(Encoding.UTF8.GetBytes(json));
-                var requestMessage = new HttpRequestMessage() { Content = byteArrayContent };
-
-                return requestMessage;
-            });
-        }
-
-        private static Func<TRequest, HttpRequestMessage> GetPostStreamRequestAction<TRequest>()
-        {
-            return (request) =>
-            {
-                var bytes = request as byte[];
-                var byteArrayContent = new ByteArrayContent(bytes);
-                byteArrayContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-                var requestMessage = new HttpRequestMessage() { Content = byteArrayContent };
-
-                return requestMessage;
-            };
-        }
-
-        private static Func<HttpResponseMessage, TResponse> GetPreRequestAction<TResponse>()
-        {
-            return new Func<HttpResponseMessage, TResponse>((responseMessage) =>
-            {
-                var jsonContent = responseMessage.Content.ReadAsStringAsync().Result;
-                var resultToReturn = JsonConvert.DeserializeObject<TResponse>(jsonContent);
-                return resultToReturn;
-            });
-        }
     }
 }
