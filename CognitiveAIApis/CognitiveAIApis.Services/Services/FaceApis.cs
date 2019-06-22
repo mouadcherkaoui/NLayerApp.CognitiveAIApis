@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using CognitiveAIApis.Services.Models;
 using System.Security;
+using CognitiveAIApis.Services.Helpers;
 
 namespace CognitiveAIApis.Services
 {
@@ -21,116 +22,83 @@ namespace CognitiveAIApis.Services
         private readonly string _endpointUri;
         private readonly string _version;
         private readonly string _subscriptionKey;
-
+        private readonly Dictionary<string, string> _headers; 
         public FaceApis(string endpointUri, string version, string subscriptionKey)
         {
             _endpointUri = $"{endpointUri}/face";
             _version = version;
             _subscriptionKey = subscriptionKey;
+            _headers = new Dictionary<string, string>()
+                .with("Accept", "application/json");
         }
 
         public FaceApis(ApiCredential credential): this(credential.Endpoint, credential.Version, credential.SubscriptionKey)
         {
 
         }
-        public async Task<object> DetectFacesAsync(object objectToProcess, Dictionary<string, string> parameters = null)
+        public async Task<object> DetectFacesAsync(object objectToProcess, 
+            Dictionary<string, string> parameters = null)
         {
             using (FileStream fileStream = new FileStream(((dynamic)objectToProcess).imageFilePath, FileMode.Open, FileAccess.Read))
             {
                 BinaryReader binaryReader = new BinaryReader(fileStream);
                 var bytes = binaryReader.ReadBytes((int)fileStream.Length);
+                var apiRequest = (new ApiCallDefinition()
+                    .WithEndpoint(_endpointUri)
+                    .WithVersion(_version)
+                    .WithMethod("POST")
+                    .WithOperationPath("detect")
+                    .WithSubscriptionKey(_subscriptionKey)
+                    .WithHeaders(_headers)
+                    .WithParameters(
+                        parameters
+                            .InitializeIfNull())
+                    .WithContentType("application/octet-stream")
+                    .WithPayload(bytes));
 
-                var requestDictionary = new Dictionary<string, object>()
-                {
-                    { "EndpointUri", $"{_endpointUri}" },
-                    { "Version", "v1.0" },
-                    { "Method", "POST" },
-                    { "RequestObject", bytes },
-                    { "RequestPath", "detect" },
-                    { "Headers",
-                        new Dictionary<string, string>
-                        {
-                            { "Ocp-Apim-Subscription-Key", _subscriptionKey },
-                            { "ContentType", "application/octet-stream" },
-                            { "Accept", "application/json" }
-                        }
-                    },
-                    { "Parameters", 
-                        new Dictionary<string, string>()
-                        {
-                            { "returnRecognitionModel", "true" }
-                        }
-                    }
-
-                };
-
-                return await RequestProcessor
-                        .ProcessRequest<byte[], List<DetectedFace>>(
-                            requestDictionary); 
+                return await apiRequest
+                        .ProcessRequest<byte[], List<DetectedFace>>(); 
             }
         }
-        public async Task<object> DetectFacesFromUrlAsync(object objectToProcess, Dictionary<string, string> parameters = null)
+        public async Task<object> DetectFacesFromUrlAsync(object objectToProcess, 
+            Dictionary<string, string> parameters = null)
         {
-            var requestDictionary = new Dictionary<string, object>()
-                {
-                    { "EndpointUri", $"{_endpointUri}" },
-                    { "Version", "v1.0" },
-                    { "Method", "POST" },
-                    { "RequestObject", objectToProcess },
-                    { "RequestPath", "detect" },
-                    { "Headers",
-                        new Dictionary<string, string>
-                        {
-                            { "Ocp-Apim-Subscription-Key", _subscriptionKey },
-                            { "ContentType", "application/json" },
-                            { "Accept", "application/json" }
-                        }
-                    },
-                    { "Parameters",
-                        new Dictionary<string, string>()
-                        {
-                            { "returnRecognitionModel", "true" },
-                            { "details", "Celebrities" }
+            var apiRequest = (new ApiCallDefinition()
+                .WithEndpoint(_endpointUri)
+                .WithVersion(_version)
+                .WithMethod("POST")
+                .WithOperationPath("detect")
+                .WithSubscriptionKey(_subscriptionKey)
+                .WithHeaders(_headers)
+                .WithParameters(
+                    parameters
+                        .InitializeIfNull())
+                .WithContentType("application/json")
+                .WithPayload(objectToProcess));
 
-                        }
-                    }
-                };
             return
-                await RequestProcessor
-                    .ProcessRequest<object, List<DetectedFace>>(
-                        requestDictionary); 
+                await apiRequest.ProcessRequest<object, List<DetectedFace>>(); 
         }
 
-        public async Task<List<DetectedFace>> DetectFacesWithUrlAsync(object objectToProcess, Dictionary<string, string> parameters = null)
+        public async Task<List<DetectedFace>> DetectFacesWithUrlAsync(object objectToProcess, 
+            Dictionary<string, string> parameters = null)
         {
-            var requestDictionary = new Dictionary<string, object>()
-                {
-                    { "EndpointUri", $"{_endpointUri}" },
-                    { "Version", "v1.0" },
-                    { "Method", "POST" },
-                    { "RequestObject", objectToProcess },
-                    { "RequestPath", "detect" },
-                    { "Headers",
-                        new Dictionary<string, string>
-                        {
-                            { "Ocp-Apim-Subscription-Key", _subscriptionKey },
-                            { "ContentType", "application/json" },
-                            { "Accept", "application/json" }
-                        }
-                    },
-                    { "Parameters",
-                        new Dictionary<string, string>()
-                        {
-                            { "returnRecognitionModel", "true" }
-                        }
-                    }
-
-                };
+            var apiRequest = (new ApiCallDefinition()
+                .WithEndpoint(_endpointUri)
+                .WithVersion(_version)
+                .WithMethod("POST")
+                .WithOperationPath("detect")
+                .WithSubscriptionKey(_subscriptionKey)
+                .WithHeaders(_headers)
+                .WithParameters(
+                    parameters
+                        .InitializeIfNull())
+                .WithContentType("application/json")
+                .WithPayload(objectToProcess));
 
             return
-                await RequestProcessor
-                    .ProcessRequest<object, List<DetectedFace>>(
-                        requestDictionary);
+                await apiRequest
+                    .ProcessRequest<object, List<DetectedFace>>();
         }
 
     }

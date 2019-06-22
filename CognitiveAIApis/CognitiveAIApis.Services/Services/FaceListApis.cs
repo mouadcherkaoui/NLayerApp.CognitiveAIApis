@@ -1,4 +1,5 @@
 ﻿using CognitiveAIApis.Models;
+using CognitiveAIApis.Services.Helpers;
 using CognitiveAIApis.Services.Models;
 using Microsoft.Azure.CognitiveServices.Vision.Face.Models;
 using Newtonsoft.Json;
@@ -17,12 +18,15 @@ namespace CognitiveAIApis.Services
         private readonly string _endpointUri;
         private readonly string _subscriptionKey;
         private readonly string _version;
+        private readonly Dictionary<string, string> _headers;
 
         public FaceListApis(string endpointUri, string version, string subscriptionKey)
         {
             _endpointUri = endpointUri;
             _version = version;
             _subscriptionKey = subscriptionKey;
+            _headers = new Dictionary<string, string>()
+                .with("Accept", "application/json")
         }
 
         public FaceListApis(ApiCredential credential) : this(credential.Endpoint, credential.Version, credential.SubscriptionKey)
@@ -31,55 +35,42 @@ namespace CognitiveAIApis.Services
         }
         public async Task<FaceList> CreateFaceListAsync(dynamic objectToProcess = null, Dictionary<string, string> parameters = null)
         {
-            var requestDictionary = new Dictionary<string, object>()
-                {
-                    { "EndpointUri", $"{_endpointUri}/face" },
-                    { "Version", "v1.0" },
-                    { "Method", "PUT" },
-                    { "RequestObject", objectToProcess },
-                    { "RequestSubPath",$"{objectToProcess.FaceListId}" },
-                    { "RequestPath", "facelists" },
-                    { "Headers",
-                        new Dictionary<string, string>
-                        {
-                            { "Ocp-Apim-Subscription-Key", _subscriptionKey },
-                            { "ContentType", "application/octet-stream" },
-                            { "Accept", "application/json" }
-                        }
-                    }
-
-                };
+            var apiRequest = (new ApiCallDefinition()
+                .WithEndpoint(_endpointUri)
+                .WithVersion(_version)
+                .WithMethod("PUT")
+                .WithOperationPath("facelists")
+                .WithOperationSubPath($"{objectToProcess.FaceListId}")
+                .WithSubscriptionKey(_subscriptionKey)
+                .WithHeaders(_headers)
+                .WithParameters(
+                    parameters
+                        .InitializeIfNull())
+                .WithContentType("application/json")
+                .WithPayload(objectToProcess));
 
             return
-                await RequestProcessor
-                    .ProcessRequest<object, FaceList>(
-                        requestDictionary);
+                await apiRequest
+                    .ProcessRequest<object, FaceList>();
         }
 
         public async Task<object> DeleteFaceListAsync(dynamic objectToProcess = null, Dictionary<string, string> parameters = null)
         {
-            var requestDictionary = new Dictionary<string, object>()
-                {
-                    { "EndpointUri", $"{_endpointUri}/face" },
-                    { "Version", "v1.0" },
-                    { "Method", "DELETE" },
-                    { "RequestObject", objectToProcess },
-                    { "RequestSubPath",$"{objectToProcess.faceListId}" },
-                    { "RequestPath", "facelists" },
-                    { "Headers",
-                        new Dictionary<string, string>
-                        {
-                            { "Ocp-Apim-Subscription-Key", _subscriptionKey },
-                            { "ContentType", "application/octet-stream" },
-                            { "Accept", "application/json" }
-                        }
-                    }
-                };
+            var apiRequest = (new ApiCallDefinition()
+                .WithEndpoint(_endpointUri)
+                .WithVersion(_version)
+                .WithMethod("DELETE")
+                .WithOperationPath("facelists")
+                .WithOperationSubPath($"{objectToProcess.faceListId}")
+                .WithSubscriptionKey(_subscriptionKey)
+                .WithHeaders(_headers)
+                .WithParameters(parameters)
+                .WithContentType("application/json")
+                .WithPayload(objectToProcess));
 
             return
-                await RequestProcessor
-                    .ProcessRequest<object, object>(
-                        requestDictionary);
+                await apiRequest
+                    .ProcessRequest<object, object>();
         }    
 
     public async Task<object> AddFaceAsync(dynamic objectToProcess = null, Dictionary<string, string> parameters = null)
@@ -89,122 +80,86 @@ namespace CognitiveAIApis.Services
                 BinaryReader binaryReader = new BinaryReader(fileStream);
                 var bytes = binaryReader.ReadBytes((int)fileStream.Length);
 
-                var requestDictionary = new Dictionary<string, object>()
-                {
-                    { "EndpointUri", $"{_endpointUri}/face" },
-                    { "Version", "v1.0" },
-                    { "Method", "POST" },
-                    { "RequestObject", bytes },
-                    { "RequestSubPath",$"{objectToProcess.faceListId}/persistedFaces" },
-                    { "RequestPath", "facelists" },
-                    { "Headers",
-                        new Dictionary<string, string>
-                        {
-                            { "Ocp-Apim-Subscription-Key", _subscriptionKey },
-                            { "ContentType", "application/octet-stream" },
-                            { "Accept", "application/json" }
-                        }
-                    },
-                    { "Parameters",
-                        new Dictionary<string, string>()
-                        {
-                            { "detectionModel", objectToProcess.detectionModel },
-                            { "targetFace", objectToProcess.targetFace }
-                        }
-                    }
-                };
+                var apiRequest = (new ApiCallDefinition()
+                    .WithEndpoint(_endpointUri)
+                    .WithVersion(_version)
+                    .WithMethod("POST")
+                    .WithOperationPath("facelists")
+                    .WithOperationSubPath($"{objectToProcess.faceListId}/persistedFaces")
+                    .WithSubscriptionKey(_subscriptionKey)
+                    .WithHeaders(_headers)
+                    .WithParameters(parameters
+                        .with("detectionModel", $"{objectToProcess.detectionModel}")
+                        .with("targetFace", $"{objectToProcess.targetFace}"))
+                    .WithContentType("application/octet-stream")
+                    .WithPayload(bytes));
 
                 return
-                    await RequestProcessor
-                        .ProcessRequest<object, object>(
-                            requestDictionary);
+                    await apiRequest
+                        .ProcessRequest<object, object>();
             }
         }
 
-        public async Task<object> AddFaceWithUrlAsync(dynamic objectToProcess = null, Dictionary<string, string> parameters = null)
+        public async Task<object> AddFaceWithUrlAsync(dynamic objectToProcess = null, 
+            Dictionary<string, string> parameters = null)
         {
-            var requestDictionary = new Dictionary<string, object>()
-                {
-                    { "EndpointUri", $"{_endpointUri}/face" },
-                    { "Version", "v1.0" },
-                    { "Method", "POST" },
-                    { "RequestObject", objectToProcess },
-                    { "RequestSubPath",$"{objectToProcess.faceListId}/persistedFaces" },
-                    { "RequestPath", "facelists" },
-                    { "Headers",
-                        new Dictionary<string, string>
-                        {
-                            { "Ocp-Apim-Subscription-Key", _subscriptionKey },
-                            { "ContentType", "application/octet-stream" },
-                            { "Accept", "application/json" }
-                        }
-                    },
-                    { "Parameters",
-                        new Dictionary<string, string>()
-                        {
-                            { "targetFace", objectToProcess.targetFace }
-                        }
-                    }
-                };
+            var apiRequest = (new ApiCallDefinition()
+                .WithEndpoint(_endpointUri)
+                .WithVersion(_version)
+                .WithMethod("POST")
+                .WithOperationPath("facelists")
+                .WithOperationSubPath($"{objectToProcess.faceListId}/persistedFaces")
+                .WithSubscriptionKey(_subscriptionKey)
+                .WithHeaders(_headers)
+                .WithParameters(parameters
+                    .with("targetFace", (string)objectToProcess.targetFace))
+                .WithContentType("application/json")
+                .WithPayload(objectToProcess));
 
             return
-                await RequestProcessor
-                    .ProcessRequest<object, object>(
-                        requestDictionary);
+                await apiRequest
+                    .ProcessRequest<object, object>();
         }
 
         public async Task<object> GetFaceListAsync(dynamic objectToProcess = null, Dictionary<string, string> parameters = null)
         {
-            var requestDictionary = new Dictionary<string, object>()
-                {
-                    { "EndpointUri", $"{_endpointUri}/face" },
-                    { "Version", "v1.0" },
-                    { "Method", "GET" },
-                    { "RequestObject", objectToProcess },
-                    { "RequestSubPath",$"{objectToProcess.faceListId}" },
-                    { "RequestPath", "facelists" },
-                    { "Headers",
-                        new Dictionary<string, string>
-                        {
-                            { "Ocp-Apim-Subscription-Key", _subscriptionKey },
-                            { "ContentType", "application/octet-stream" },
-                            { "Accept", "application/json" }
-                        }
-                    }
-
-                };
+            var apiRequest = (new ApiCallDefinition()
+                .WithEndpoint(_endpointUri)
+                .WithVersion(_version)
+                .WithMethod("GET")
+                .WithOperationPath("facelists")
+                .WithOperationSubPath($"{objectToProcess.faceListId}")
+                .WithSubscriptionKey(_subscriptionKey)
+                .WithHeaders(_headers)
+                .WithParameters(
+                    parameters
+                        .InitializeIfNull())
+                .WithContentType("application/json")
+                .WithPayload(objectToProcess));
 
             return
-                await RequestProcessor
-                    .ProcessRequest<object, FaceList>(
-                        requestDictionary);
+                await apiRequest
+                    .ProcessRequest<object, FaceList>();
         }
 
         public async Task<object> ListFaceListsAsync(dynamic objectToProcess = null, Dictionary<string, string> parameters = null)
         {
-            var requestDictionary = new Dictionary<string, object>()
-                {
-                    { "EndpointUri", $"{_endpointUri}/face" },
-                    { "Version", "v1.0" },
-                    { "Method", "GET" },
-                    { "RequestObject", objectToProcess },
-                    { "RequestSubPath","" },
-                    { "RequestPath", "facelists" },
-                    { "Headers",
-                        new Dictionary<string, string>
-                        {
-                            { "Ocp-Apim-Subscription-Key", _subscriptionKey },
-                            { "ContentType", "application/octet-stream" },
-                            { "Accept", "application/json" }
-                        }
-                    }
-
-                };
+            var apiRequest = (new ApiCallDefinition()
+                .WithEndpoint(_endpointUri)
+                .WithVersion(_version)
+                .WithMethod("GET")
+                .WithOperationPath("facelists")
+                .WithSubscriptionKey(_subscriptionKey)
+                .WithHeaders(_headers)
+                .WithParameters(
+                    parameters
+                        .InitializeIfNull())
+                .WithContentType("application/json")
+                .WithPayload(objectToProcess));
 
             return
-                await RequestProcessor
-                    .ProcessRequest<object, object>(
-                        requestDictionary);
+                await apiRequest
+                    .ProcessRequest<object, object>();
         }
     }
 }
