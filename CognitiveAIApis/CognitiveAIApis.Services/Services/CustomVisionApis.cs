@@ -16,8 +16,9 @@ namespace CognitiveAIApis.Services
     public class CustomVisionApis
     {
         private readonly string _endpointUri;
-        private readonly string _subscriptionKey;
         private readonly string _version;
+        private readonly string _subscriptionKey;
+        private readonly string _trainingKey;
         private readonly Dictionary<string, string> _headers;
 
 
@@ -26,22 +27,40 @@ namespace CognitiveAIApis.Services
             _endpointUri = $"{endpointUri}/customvision";
             _version = version;
             _subscriptionKey = subscriptionKey;
-
+            _trainingKey = trainingKey;
             _headers = 
                 new Dictionary<string, string>
                 {
                     { "Ocp-Apim-Subscription-Key", _subscriptionKey},
                     { "Accept", "application/json" }
-                }
-                .with("TrainingKey", trainingKey);
+                };
         }
 
-        public CustomVisionApis(ApiCredential credential) : this(credential.Endpoint, credential.Version, credential.SubscriptionKey) { }
+        public CustomVisionApis(ApiCredential credential, string trainingKey = "") 
+            : this(credential.Endpoint, credential.Version, credential.SubscriptionKey, trainingKey) { }
 
         public async Task<CreateProjectResult> CreateProjectAsync(dynamic objectToProcess = null, 
             Dictionary<string, string> parameters = null)
         {
-            var requestDictionary = new ApiDictionary()
+            var requestDict = new ApiDefinition()
+                .WithEndpoint(_endpointUri)
+                .WithVersion(_version)
+                .WithMethod("POST")
+                .WithOperationPath("training")
+                .WithOperationSubPath("projects")
+                .WithSubscriptionKey(_subscriptionKey)
+                .WithHeaders(_headers
+                    .with("Training-Key", _trainingKey))
+                .WithParameters(
+                    parameters
+                        .InitializeIfNull()
+                        .with("name", "testProject"))
+                .WithContentType("application/json")
+                .WithPayload(objectToProcess);
+
+            requestDict.ProcessRequest<object, CreateProjectResult>();
+
+            var requestDictionary = new Dictionary<string, object>()
                 {
                     { "Endpoint_Uri", $"{_endpointUri}" },
                     { "Endpoint_Version", _version },
@@ -60,13 +79,6 @@ namespace CognitiveAIApis.Services
                     { "RequestObject", objectToProcess }
                 };
 
-            var preRequestAction = new Func<HttpResponseMessage, object>((response) =>
-            {
-                var content = response.Content;
-                var json = content.ReadAsStringAsync().Result;
-                var result = JsonConvert.DeserializeObject(json);
-                return result;
-            });
             return
                 await RequestProcessor
                     .ProcessRequest<object, CreateProjectResult>(requestDictionary);

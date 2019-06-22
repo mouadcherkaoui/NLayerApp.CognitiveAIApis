@@ -1,3 +1,1 @@
 # cognitive-ai-apis
-## Description
-this is an example of using CognitiveServices AI through a CQRS system, my goal was to get to know the set of apis through a practical example, where I implemented a simplified mediator pattern to manage ApiCallCommand, at a certain level the object that play the mediator role has no idea about the way the request is handled, and then it receive a dictionary of parameters as argument in conjunction with two generic type definition

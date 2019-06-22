@@ -18,10 +18,10 @@ namespace CognitiveAIApis.Services
 {
     class Program
     {
-        private const string subscriptionKey = "8cf15696a50e46d6b5c8b8d14fabeec6";
+        private const string subscriptionKey = "5363dc26ffc645eaaf0c2e6af1d87dd4";
 
         private const string _endpoint =
-            "https://westus2.api.cognitive.microsoft.com/";
+            "https://westus2.api.cognitive.microsoft.com";
 
         private const string localImagePath = @"Images/image.jpg";
 
@@ -31,7 +31,7 @@ namespace CognitiveAIApis.Services
         static void Main(string[] args)
         {
             var credential = new ApiCredential { Endpoint = _endpoint, Version = "v3.0", SubscriptionKey = subscriptionKey };
-            var visionApis = new CustomVisionApis(credential);
+            var visionApis = new CustomVisionApis(credential, trainingKey: "5db8186f847f43079668979adf24f8f3");
             var result = visionApis.CreateProjectAsync(new { name = "testProject"}).Result;
             dynamic tagResult0 = visionApis.CreateTagAsync(new { projectId = result.id, tagName = "fork" }).Result;
             dynamic tagResult1 = visionApis.CreateTagAsync(new { projectId = result.id, tagName = "scissor" }).Result;

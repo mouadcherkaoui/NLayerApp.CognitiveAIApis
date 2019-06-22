@@ -21,5 +21,10 @@ namespace CognitiveAIApis.Services.Helpers
         {
             return keyValueDict.ExtendWith(new KeyValuePair<TKey, TValue>(key, value));
         }
+
+        public static Dictionary<TKey, TValue> InitializeIfNull<TKey, TValue>(this Dictionary<TKey, TValue> source)
+        {
+            return  (source = source ?? new Dictionary<TKey, TValue>());
+        }
     }
 }
