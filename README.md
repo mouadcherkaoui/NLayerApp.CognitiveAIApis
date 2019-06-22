@@ -6,21 +6,23 @@
 each api request object is defined through a fluent api that add required headers and parameters, the purpose of this helper is to simplify apis calls 
 
 ````csharp  
-     var requestDict = new ApiDefinition()
+            var apiRequest = (new ApiCallDefinition()
                 .WithEndpoint(_endpointUri)
                 .WithVersion(_version)
                 .WithMethod("POST")
                 .WithOperationPath("training")
-                .WithOperationSubPath("projects")
+                .WithOperationSubPath($"projects/{objectToProcess.projectId}/tags")
                 .WithSubscriptionKey(_subscriptionKey)
                 .WithHeaders(_headers
                     .with("Training-Key", _trainingKey))
                 .WithParameters(
                     parameters
                         .InitializeIfNull()
-                        .with("name", "testProject"))
+                        .with("name", objectToProcess.tagName))
                 .WithContentType("application/json")
-                .WithPayload(objectToProcess);
+                .WithPayload(objectToProcess));
 
-            requestDict.ProcessRequest<object, CreateProjectResult>(); 
+            return await apiRequest
+                    .ProcessRequest<object, CreateTagResult>();
+
    `

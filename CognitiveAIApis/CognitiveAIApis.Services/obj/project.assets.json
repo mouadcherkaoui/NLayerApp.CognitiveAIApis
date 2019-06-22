@@ -4943,11 +4943,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "c:\\Users\\Administrator\\Downloads\\cognitive-ai-apis-master\\cognitive-ai-apis-master\\CognitiveAIApis\\CognitiveAIApis.Services\\CognitiveAIApis.Services.csproj",
+      "projectUniqueName": "C:\\Users\\Administrator\\source\\repos\\CognitiveAIApis\\CognitiveAIApis.Services\\CognitiveAIApis.Services.csproj",
       "projectName": "CognitiveAIApis.Services",
-      "projectPath": "c:\\Users\\Administrator\\Downloads\\cognitive-ai-apis-master\\cognitive-ai-apis-master\\CognitiveAIApis\\CognitiveAIApis.Services\\CognitiveAIApis.Services.csproj",
+      "projectPath": "C:\\Users\\Administrator\\source\\repos\\CognitiveAIApis\\CognitiveAIApis.Services\\CognitiveAIApis.Services.csproj",
       "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
-      "outputPath": "c:\\Users\\Administrator\\Downloads\\cognitive-ai-apis-master\\cognitive-ai-apis-master\\CognitiveAIApis\\CognitiveAIApis.Services\\obj\\",
+      "outputPath": "C:\\Users\\Administrator\\source\\repos\\CognitiveAIApis\\CognitiveAIApis.Services\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -4972,8 +4972,8 @@
       "frameworks": {
         "netcoreapp3.0": {
           "projectReferences": {
-            "c:\\Users\\Administrator\\Downloads\\cognitive-ai-apis-master\\cognitive-ai-apis-master\\CognitiveAIApis\\CognitiveAIApis.Infrastructure\\CognitiveAIApis.Infrastructure.csproj": {
-              "projectPath": "c:\\Users\\Administrator\\Downloads\\cognitive-ai-apis-master\\cognitive-ai-apis-master\\CognitiveAIApis\\CognitiveAIApis.Infrastructure\\CognitiveAIApis.Infrastructure.csproj"
+            "C:\\Users\\Administrator\\source\\repos\\CognitiveAIApis\\CognitiveAIApis.Infrastructure\\CognitiveAIApis.Infrastructure.csproj": {
+              "projectPath": "C:\\Users\\Administrator\\source\\repos\\CognitiveAIApis\\CognitiveAIApis.Infrastructure\\CognitiveAIApis.Infrastructure.csproj"
             }
           }
         }

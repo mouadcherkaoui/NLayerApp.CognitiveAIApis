@@ -24,7 +24,7 @@ namespace CognitiveAIApis.Services.Models
         Task<TResult> ProcessRequest<TRequest, TResult>() where TResult : class;
     }
 
-    public class ApiDefinition : IApiDictionary
+    public class ApiCallDefinition : IApiDictionary
     {
         private Dictionary<string, object> _innerDict = new Dictionary<string, object>();
         public IApiDictionary WithSubscriptionKey(string SubscriptionKey)

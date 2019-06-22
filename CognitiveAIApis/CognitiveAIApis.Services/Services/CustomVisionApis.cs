@@ -22,7 +22,7 @@ namespace CognitiveAIApis.Services
         private readonly Dictionary<string, string> _headers;
 
 
-        public CustomVisionApis(string endpointUri, string version, string subscriptionKey, string trainingKey = "5363dc26ffc645eaaf0c2e6af1d87dd4")
+        public CustomVisionApis(string endpointUri, string version, string subscriptionKey, string trainingKey = "")
         {
             _endpointUri = $"{endpointUri}/customvision";
             _version = version;
@@ -42,7 +42,7 @@ namespace CognitiveAIApis.Services
         public async Task<CreateProjectResult> CreateProjectAsync(dynamic objectToProcess = null, 
             Dictionary<string, string> parameters = null)
         {
-            var requestDict = new ApiDefinition()
+            var apiRequest =  (new ApiCallDefinition()
                 .WithEndpoint(_endpointUri)
                 .WithVersion(_version)
                 .WithMethod("POST")
@@ -56,85 +56,52 @@ namespace CognitiveAIApis.Services
                         .InitializeIfNull()
                         .with("name", "testProject"))
                 .WithContentType("application/json")
-                .WithPayload(objectToProcess);
+                .WithPayload(objectToProcess));
 
-            requestDict.ProcessRequest<object, CreateProjectResult>();
-
-            var requestDictionary = new Dictionary<string, object>()
-                {
-                    { "Endpoint_Uri", $"{_endpointUri}" },
-                    { "Endpoint_Version", _version },
-                    { "Operation_Method", "POST" },
-                    { "Operation_Path", "training" },
-                    { "Operation_SubPath", "projects" },
-                    { "Headers", _headers.with("ContentType", "application/json") }, 
-                        // .Append(new KeyValuePair<string, string> ("ContentType", "application/json")) // the with extension method is an abreviation of the two operations
-                        // .ToDictionary(kv => kv.Key, kv => kv.Value) },                                // of appending and reconverting the result back from IEnumerable to Dictionary
-                    { "Parameters",
-                        new Dictionary<string, string>()
-                        {
-                            { "name", "testProject" }
-                        }
-                    },
-                    { "RequestObject", objectToProcess }
-                };
-
-            return
-                await RequestProcessor
-                    .ProcessRequest<object, CreateProjectResult>(requestDictionary);
+            return await apiRequest.ProcessRequest<object, CreateProjectResult>();
         }
 
         public async Task<CreateTagResult> CreateTagAsync(dynamic objectToProcess = null, 
             Dictionary<string, string> parameters = null)
         {
-            var requestDictionary = new Dictionary<string, object>()
-                {
-                    { "Endpoint_Uri", $"{_endpointUri}" },
-                    { "Endpoint_Version", _version },
-                    { "Operation_Method", "POST" },
-                    { "Operation_Path", "training" },
-                    { "Operation_SubPath", $"projects/{objectToProcess.projectId}/tags" },
-                    { "Headers", _headers.with("ContentType", "application/json") },
-                    { "Parameters",
-                        new Dictionary<string, string>()
-                        {
-                            { "name", objectToProcess.tagName }
-                        }
-                    },
-                    { "RequestObject", objectToProcess }
-                };
+            var apiRequest = (new ApiCallDefinition()
+                .WithEndpoint(_endpointUri)
+                .WithVersion(_version)
+                .WithMethod("POST")
+                .WithOperationPath("training")
+                .WithOperationSubPath($"projects/{objectToProcess.projectId}/tags")
+                .WithSubscriptionKey(_subscriptionKey)
+                .WithHeaders(_headers
+                    .with("Training-Key", _trainingKey))
+                .WithParameters(
+                    parameters
+                        .InitializeIfNull()
+                        .with("name", (string)objectToProcess.tagName))
+                .WithContentType("application/json")
+                .WithPayload(objectToProcess));
 
-            return
-                await RequestProcessor
-                    .ProcessRequest<object, CreateTagResult>(
-                        requestDictionary);
+            return await apiRequest
+                    .ProcessRequest<object, CreateTagResult>();
         }
 
         public async Task<CreateImagesResult> CreateImagesFromUrlsAsync(dynamic objectToProcess = null, 
             Dictionary<string, string> parameters = null)
         {
-            var requestDictionary = new Dictionary<string, object>()
-                {
-                    { "Endpoint_Uri", $"{_endpointUri}" },
-                    { "Endpoint_Version", _version },
-                    { "Operation_Method", "POST" },
-                    { "Operation_Path", "training" },
-                    { "Operation_SubPath", $"projects/{objectToProcess.projectId}/images/urls" },
-                    { "Headers", _headers.with("ContentType", "application/json") },
-                    { "Parameters",
-                        new Dictionary<string, string>()
-                        {
-                            { "name", "testTag" }
-                        }
-                    },
-                    { "RequestObject", objectToProcess }
-                };
-
+            var apiRequest = (new ApiCallDefinition()
+                .WithEndpoint(_endpointUri)
+                .WithVersion(_version)
+                .WithMethod("POST")
+                .WithOperationPath("training")
+                .WithOperationSubPath($"projects/{objectToProcess.projectId}/images/urls")
+                .WithSubscriptionKey(_subscriptionKey)
+                .WithHeaders(_headers
+                    .with("Training-Key", _trainingKey))
+                .WithContentType("application/json")
+                .WithPayload(objectToProcess));
 
             return
-                await RequestProcessor
-                    .ProcessRequest<object, CreateImagesResult>(
-                        requestDictionary);
+                await apiRequest
+                    .ProcessRequest<object, CreateImagesResult>();
         }
 
         public async Task<CreateImagesResult> CreateImagesAsync(dynamic objectToProcess = null, 
@@ -168,98 +135,86 @@ namespace CognitiveAIApis.Services
         public async Task<TrainingResult> TrainProjectAsync(dynamic objectToProcess = null, 
             Dictionary<string, string> parameters = null)
         {
-
-            var requestDictionary = new Dictionary<string, object>()
-                {
-                    { "Endpoint_Uri", $"{_endpointUri}" },
-                    { "Endpoint_Version", _version },
-                    { "Operation_Method", "POST" },
-                    { "Operation_Path", "training" },
-                    { "Operation_SubPath", $"projects/{objectToProcess.projectId}/train" },
-                    { "Headers", _headers.with("ContentType", "application/json") },
-                    { "RequestObject", objectToProcess }
-                };
-
+            var apiRequest = (new ApiCallDefinition()
+                .WithEndpoint(_endpointUri)
+                .WithVersion(_version)
+                .WithMethod("POST")
+                .WithOperationPath("training")
+                .WithOperationSubPath($"projects/{objectToProcess.projectId}/train")
+                .WithSubscriptionKey(_subscriptionKey)
+                .WithHeaders(_headers
+                    .with("Training-Key", _trainingKey))
+                .WithContentType("application/json")
+                .WithPayload(objectToProcess));
 
             return
-                await RequestProcessor
-                    .ProcessRequest<object, TrainingResult>(
-                        requestDictionary);
+                await apiRequest
+                    .ProcessRequest<object, TrainingResult>();
         }
 
         public async Task<List<Iteration>> GetIterations(dynamic objectToProcess = null, 
             Dictionary<string, string> parameters = null)
         {
-
-            var requestDictionary = new Dictionary<string, object>()
-                {
-                    { "Endpoint_Uri", $"{_endpointUri}" },
-                    { "Endpoint_Version", _version },
-                    { "Operation_Method", "GET" },
-                    { "Operation_Path", "training" },
-                    { "Operation_SubPath", $"projects/{objectToProcess.projectId}/iterations" },
-                    { "Headers", _headers.with("ContentType", "application/json") },
-                    { "RequestObject", objectToProcess }
-                };
-
+            var apiRequest = (new ApiCallDefinition()
+                .WithEndpoint(_endpointUri)
+                .WithVersion(_version)
+                .WithMethod("GET")
+                .WithOperationPath("training")
+                .WithOperationSubPath($"projects/{objectToProcess.projectId}/iterations")
+                .WithSubscriptionKey(_subscriptionKey)
+                .WithHeaders(_headers
+                    .with("Training-Key", _trainingKey))
+                .WithContentType("application/json")
+                .WithPayload(objectToProcess));
 
             return
-                await RequestProcessor
-                    .ProcessRequest<object, List<Iteration>>(
-                        requestDictionary);
+                await apiRequest
+                    .ProcessRequest<object, List<Iteration>>();
         }
 
         public async Task<object> UpdateIteration(dynamic objectToProcess = null, 
             Dictionary<string, string> parameters = null)
         {
-
-            var requestDictionary = new Dictionary<string, object>()
-                {
-                    { "Endpoint_Uri", $"{_endpointUri}" },
-                    { "Endpoint_Version", _version },
-                    { "Operation_Method", "PATCH" },
-                    { "Operation_Path", "training" },
-                    { "Operation_SubPath", $"projects/{objectToProcess.projectId}/iterations/{objectToProcess.iterationId}" },
-                    { "Headers", _headers.with("ContentType", "application/json") },
-                    { "RequestObject", objectToProcess.iteration }
-                };
-
+            var apiRequest = (new ApiCallDefinition()
+                .WithEndpoint(_endpointUri)
+                .WithVersion(_version)
+                .WithMethod("PATCH")
+                .WithOperationPath("training")
+                .WithOperationSubPath($"projects/{objectToProcess.projectId}/iterations/{objectToProcess.iterationId}")
+                .WithSubscriptionKey(_subscriptionKey)
+                .WithHeaders(_headers
+                    .with("Training-Key", _trainingKey))
+                .WithContentType("application/json")
+                .WithPayload(objectToProcess));
 
             return
-                await RequestProcessor
-                    .ProcessRequest<object, object>(
-                        requestDictionary);
+                await apiRequest
+                    .ProcessRequest<object, object>();
         }
 
         public async Task<QuickTestResult> QuickTestImageWithUrlAsync(string iterationId, string projectId, 
             dynamic objectToProcess = null, 
             Dictionary<string, string> parameters = null)
         {
-
-            var requestDictionary = new Dictionary<string, object>()
-                {
-                    { "Endpoint_Uri", $"{_endpointUri}" },
-                    { "Endpoint_Version", _version },
-                    { "Operation_Method", "POST" },
-                    { "Operation_Path", "training" },
-                    { "Operation_SubPath", $"projects/{projectId}/quicktest/url" },
-                    { "Headers", _headers.with("ContentType", "application/json") },
-                    { "Parameters", 
-                        new Dictionary<string, string>{
-                            { "iterationId", iterationId }
-                        }
-                    },
-                    { "RequestObject", objectToProcess }
-                };
-
+            var apiRequest = (new ApiCallDefinition()
+                .WithEndpoint(_endpointUri)
+                .WithVersion(_version)
+                .WithMethod("POST")
+                .WithOperationPath("training")
+                .WithOperationSubPath($"projects/{projectId}/quicktest/url")
+                .WithSubscriptionKey(_subscriptionKey)
+                .WithHeaders(_headers
+                    .with("Training-Key", _trainingKey))
+                .WithParameters(
+                    parameters
+                        .InitializeIfNull()
+                        .with("iterationId", iterationId))
+                .WithContentType("application/json")
+                .WithPayload(objectToProcess));
 
             return
-                await RequestProcessor
-                    .ProcessRequest<object, QuickTestResult>(
-                        requestDictionary);
+                await apiRequest
+                    .ProcessRequest<object, QuickTestResult>();
         }
-
-
-
     }
 }

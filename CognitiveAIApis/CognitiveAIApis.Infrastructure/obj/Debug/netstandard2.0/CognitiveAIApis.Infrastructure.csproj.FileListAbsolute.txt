@@ -1,0 +1,9 @@
+C:\Users\Administrator\source\repos\CognitiveAIApis\CognitiveAIApis.Infrastructure\obj\Debug\netstandard2.0\CognitiveAIApis.Infrastructure.csprojAssemblyReference.cache
+C:\Users\Administrator\source\repos\CognitiveAIApis\CognitiveAIApis.Infrastructure\obj\Debug\netstandard2.0\CognitiveAIApis.Infrastructure.csproj.CoreCompileInputs.cache
+C:\Users\Administrator\source\repos\CognitiveAIApis\CognitiveAIApis.Infrastructure\obj\Debug\netstandard2.0\CognitiveAIApis.Infrastructure.AssemblyInfoInputs.cache
+C:\Users\Administrator\source\repos\CognitiveAIApis\CognitiveAIApis.Infrastructure\obj\Debug\netstandard2.0\CognitiveAIApis.Infrastructure.AssemblyInfo.cs
+C:\Users\Administrator\source\repos\CognitiveAIApis\CognitiveAIApis.Infrastructure\bin\Debug\netstandard2.0\CognitiveAIApis.Infrastructure.deps.json
+C:\Users\Administrator\source\repos\CognitiveAIApis\CognitiveAIApis.Infrastructure\bin\Debug\netstandard2.0\CognitiveAIApis.Infrastructure.dll
+C:\Users\Administrator\source\repos\CognitiveAIApis\CognitiveAIApis.Infrastructure\bin\Debug\netstandard2.0\CognitiveAIApis.Infrastructure.pdb
+C:\Users\Administrator\source\repos\CognitiveAIApis\CognitiveAIApis.Infrastructure\obj\Debug\netstandard2.0\CognitiveAIApis.Infrastructure.dll
+C:\Users\Administrator\source\repos\CognitiveAIApis\CognitiveAIApis.Infrastructure\obj\Debug\netstandard2.0\CognitiveAIApis.Infrastructure.pdb

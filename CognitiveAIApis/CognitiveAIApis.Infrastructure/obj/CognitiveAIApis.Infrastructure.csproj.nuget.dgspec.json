@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\Administrator\\Downloads\\cognitive-ai-apis-master\\cognitive-ai-apis-master\\CognitiveAIApis\\CognitiveAIApis.Infrastructure\\CognitiveAIApis.Infrastructure.csproj": {}
+    "C:\\Users\\Administrator\\source\\repos\\CognitiveAIApis\\CognitiveAIApis.Infrastructure\\CognitiveAIApis.Infrastructure.csproj": {}
   },
   "projects": {
-    "c:\\Users\\Administrator\\Downloads\\cognitive-ai-apis-master\\cognitive-ai-apis-master\\CognitiveAIApis\\CognitiveAIApis.Infrastructure\\CognitiveAIApis.Infrastructure.csproj": {
+    "C:\\Users\\Administrator\\source\\repos\\CognitiveAIApis\\CognitiveAIApis.Infrastructure\\CognitiveAIApis.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\Administrator\\Downloads\\cognitive-ai-apis-master\\cognitive-ai-apis-master\\CognitiveAIApis\\CognitiveAIApis.Infrastructure\\CognitiveAIApis.Infrastructure.csproj",
+        "projectUniqueName": "C:\\Users\\Administrator\\source\\repos\\CognitiveAIApis\\CognitiveAIApis.Infrastructure\\CognitiveAIApis.Infrastructure.csproj",
         "projectName": "CognitiveAIApis.Infrastructure",
-        "projectPath": "c:\\Users\\Administrator\\Downloads\\cognitive-ai-apis-master\\cognitive-ai-apis-master\\CognitiveAIApis\\CognitiveAIApis.Infrastructure\\CognitiveAIApis.Infrastructure.csproj",
+        "projectPath": "C:\\Users\\Administrator\\source\\repos\\CognitiveAIApis\\CognitiveAIApis.Infrastructure\\CognitiveAIApis.Infrastructure.csproj",
         "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\Administrator\\Downloads\\cognitive-ai-apis-master\\cognitive-ai-apis-master\\CognitiveAIApis\\CognitiveAIApis.Infrastructure\\obj\\",
+        "outputPath": "C:\\Users\\Administrator\\source\\repos\\CognitiveAIApis\\CognitiveAIApis.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

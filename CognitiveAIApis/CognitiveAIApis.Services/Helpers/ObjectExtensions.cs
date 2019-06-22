@@ -4,7 +4,9 @@ using System.Text;
 
 namespace CognitiveAIApis.Services.Helpers
 {
-    class ObjectExtensions
+    public static class ObjectExtensions
     {
+        public static TResult PipeTo<TSource, TResult>(this TSource source, 
+            Func<TSource, TResult> destination) => destination.Invoke(source);
     }
 }

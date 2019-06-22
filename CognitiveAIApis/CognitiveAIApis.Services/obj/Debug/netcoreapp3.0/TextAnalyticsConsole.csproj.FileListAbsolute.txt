@@ -1,0 +1,17 @@
+C:\Users\Administrator\source\repos\TextAnalyticsConsole\bin\Debug\netcoreapp3.0\TextAnalyticsConsole.exe
+C:\Users\Administrator\source\repos\TextAnalyticsConsole\obj\Debug\netcoreapp3.0\TextAnalyticsConsole.csprojAssemblyReference.cache
+C:\Users\Administrator\source\repos\TextAnalyticsConsole\obj\Debug\netcoreapp3.0\TextAnalyticsConsole.csproj.CoreCompileInputs.cache
+C:\Users\Administrator\source\repos\TextAnalyticsConsole\obj\Debug\netcoreapp3.0\TextAnalyticsConsole.AssemblyInfoInputs.cache
+C:\Users\Administrator\source\repos\TextAnalyticsConsole\obj\Debug\netcoreapp3.0\TextAnalyticsConsole.AssemblyInfo.cs
+C:\Users\Administrator\source\repos\TextAnalyticsConsole\bin\Debug\netcoreapp3.0\Newtonsoft.Json.dll
+C:\Users\Administrator\source\repos\TextAnalyticsConsole\obj\Debug\netcoreapp3.0\TextAnalyticsConsole.csproj.CopyComplete
+C:\Users\Administrator\source\repos\TextAnalyticsConsole\bin\Debug\netcoreapp3.0\TextAnalyticsConsole.deps.json
+C:\Users\Administrator\source\repos\TextAnalyticsConsole\bin\Debug\netcoreapp3.0\TextAnalyticsConsole.runtimeconfig.json
+C:\Users\Administrator\source\repos\TextAnalyticsConsole\bin\Debug\netcoreapp3.0\TextAnalyticsConsole.runtimeconfig.dev.json
+C:\Users\Administrator\source\repos\TextAnalyticsConsole\bin\Debug\netcoreapp3.0\TextAnalyticsConsole.dll
+C:\Users\Administrator\source\repos\TextAnalyticsConsole\bin\Debug\netcoreapp3.0\TextAnalyticsConsole.pdb
+C:\Users\Administrator\source\repos\TextAnalyticsConsole\bin\Debug\netcoreapp3.0\Microsoft.Azure.CognitiveServices.Vision.Face.dll
+C:\Users\Administrator\source\repos\TextAnalyticsConsole\bin\Debug\netcoreapp3.0\Microsoft.Rest.ClientRuntime.dll
+C:\Users\Administrator\source\repos\TextAnalyticsConsole\bin\Debug\netcoreapp3.0\Microsoft.Rest.ClientRuntime.Azure.dll
+C:\Users\Administrator\source\repos\TextAnalyticsConsole\obj\Debug\netcoreapp3.0\TextAnalyticsConsole.dll
+C:\Users\Administrator\source\repos\TextAnalyticsConsole\obj\Debug\netcoreapp3.0\TextAnalyticsConsole.pdb
