@@ -92,7 +92,7 @@ namespace CognitiveAIApis.Services.Models
 
         public async Task<TResult> ProcessRequest<TRequest, TResult>() where TResult: class
         {
-            return await RequestProcessor.ProcessRequest<TRequest, TResult>(requestDictionary: _innerDict);
+            return await RequestProcessor.ProcessRequest<TResult>(requestDictionary: _innerDict);
         }
 
         public IApiDictionary WithMethod(string method)

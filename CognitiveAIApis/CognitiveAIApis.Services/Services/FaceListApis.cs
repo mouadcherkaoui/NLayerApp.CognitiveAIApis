@@ -26,7 +26,7 @@ namespace CognitiveAIApis.Services
             _version = version;
             _subscriptionKey = subscriptionKey;
             _headers = new Dictionary<string, string>()
-                .with("Accept", "application/json")
+                .with("Accept", "application/json");
         }
 
         public FaceListApis(ApiCredential credential) : this(credential.Endpoint, credential.Version, credential.SubscriptionKey)

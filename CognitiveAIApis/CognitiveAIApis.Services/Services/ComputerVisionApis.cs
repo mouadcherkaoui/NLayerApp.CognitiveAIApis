@@ -26,12 +26,10 @@ namespace CognitiveAIApis.Services
             _endpointUri = $"{endpointUri}/vision";
             _version = version;
             _subscriptionKey = subscriptionKey;
-            _headers = new Dictionary<string, string>
-                        {
-                            { "Ocp-Apim-Subscription-Key", _subscriptionKey},
-                            { "Training-Key", trainingKey ?? "" },
-                            { "Accept", "application/json" }
-                        };
+            _headers = new Dictionary<string, string>()
+                .with("Ocp-Apim-Subscription-Key", _subscriptionKey)
+                .with("Training-Key", trainingKey ?? "")
+                .with("Accept", "application/json");
         }
         public ComputerVisionApis(ApiCredential credential): this(credential.Endpoint, credential.Version, credential.SubscriptionKey, "")
         {
@@ -52,10 +50,7 @@ namespace CognitiveAIApis.Services
                     .WithOperationPath("analyze")
                     .WithSubscriptionKey(_subscriptionKey)
                     .WithHeaders(_headers)
-                    .WithParameters(
-                        parameters
-                            .InitializeIfNull()
-                            .with("recognitionModel", "true"))
+                    .WithParameters(parameters.with("recognitionModel", "true"))
                     .WithContentType("application/octet-stream")
                     .WithPayload(bytes));
 
@@ -63,7 +58,7 @@ namespace CognitiveAIApis.Services
             }
         }
         public async Task<object> AnalyzeImageWithUrl(object objectToProcess = null,
-            Dictionary<string, string> parameters)
+            Dictionary<string, string> parameters = null)
         {
             var apiRequest = (new ApiCallDefinition()
                 .WithEndpoint(_endpointUri)
@@ -74,7 +69,6 @@ namespace CognitiveAIApis.Services
                 .WithHeaders(_headers)
                 .WithParameters(
                     parameters
-                        .InitializeIfNull()
                         .with("recognitionModel", "true"))
                 .WithContentType("application/json")
                 .WithPayload(objectToProcess));
@@ -96,9 +90,7 @@ namespace CognitiveAIApis.Services
                     .WithOperationPath("describe")
                     .WithSubscriptionKey(_subscriptionKey)
                     .WithHeaders(_headers)
-                    .WithParameters(
-                        parameters
-                            .InitializeIfNull())
+                    .WithParameters(parameters)
                     .WithContentType("application/octet-stream")
                     .WithPayload(bytes));
 
@@ -115,9 +107,7 @@ namespace CognitiveAIApis.Services
                 .WithOperationPath("describe")
                 .WithSubscriptionKey(_subscriptionKey)
                 .WithHeaders(_headers)
-                .WithParameters(
-                    parameters
-                        .InitializeIfNull())
+                .WithParameters(parameters)
                 .WithContentType("application/json")
                 .WithPayload(objectToProcess));
 
@@ -134,9 +124,7 @@ namespace CognitiveAIApis.Services
                 .WithOperationPath("detect")
                 .WithSubscriptionKey(_subscriptionKey)
                 .WithHeaders(_headers)
-                .WithParameters(
-                    parameters
-                        .InitializeIfNull())
+                .WithParameters(parameters)
                 .WithContentType("application/json")
                 .WithPayload(objectToProcess));
 
@@ -154,9 +142,7 @@ namespace CognitiveAIApis.Services
                 .WithOperationPath("areaOfInterest")
                 .WithSubscriptionKey(_subscriptionKey)
                 .WithHeaders(_headers)
-                .WithParameters(
-                    parameters
-                        .InitializeIfNull())
+                .WithParameters(parameters)
                 .WithContentType("application/json")
                 .WithPayload(objectToProcess));
 

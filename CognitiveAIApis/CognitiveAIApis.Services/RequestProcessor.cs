@@ -36,5 +36,15 @@ namespace CognitiveAIApis.Services
             var requestHandler = new ApiCommandHandler<TRequest, TResult>(request, postRequestAction, preRequestAction);
             return await requestHandler.HandleRequestAsync();
         }
+
+        public static async Task<TResult> ProcessRequest<TResult>(Dictionary<string, object> requestDictionary,
+            Func<Dictionary<string, object>, HttpRequestMessage> postRequestAction = null,
+            Func<HttpResponseMessage, TResult> preRequestAction = null)
+            where TResult : class
+        {
+
+            var requestHandler = new ApiDictHandler<TResult>(requestDictionary, postRequestAction, preRequestAction);
+            return await requestHandler.HandleRequestAsync();
+        }
     }
 }

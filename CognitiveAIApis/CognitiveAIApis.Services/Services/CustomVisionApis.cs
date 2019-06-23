@@ -96,12 +96,13 @@ namespace CognitiveAIApis.Services
                 .WithSubscriptionKey(_subscriptionKey)
                 .WithHeaders(_headers
                     .with("Training-Key", _trainingKey))
+                .WithParameters(parameters.InitializeIfNull())
                 .WithContentType("application/json")
-                .WithPayload(objectToProcess));
+                .WithPayload(objectToProcess.requestObject));
 
             return
                 await apiRequest
-                    .ProcessRequest<object, CreateImagesResult>();
+                    .ProcessRequest<CreateImagesRequest, CreateImagesResult>();
         }
 
         public async Task<CreateImagesResult> CreateImagesAsync(dynamic objectToProcess = null, 
