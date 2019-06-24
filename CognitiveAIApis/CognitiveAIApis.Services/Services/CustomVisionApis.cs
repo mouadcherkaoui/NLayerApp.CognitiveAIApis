@@ -1,4 +1,5 @@
-﻿using CognitiveAIApis.Models.CustomVision;
+﻿using CognitiveAIApis.Infrastructure;
+using CognitiveAIApis.Models.CustomVision;
 using CognitiveAIApis.Services.Helpers;
 using CognitiveAIApis.Services.Models;
 using Newtonsoft.Json;
@@ -39,7 +40,7 @@ namespace CognitiveAIApis.Services
         public CustomVisionApis(ApiCredential credential, string trainingKey = "") 
             : this(credential.Endpoint, credential.Version, credential.SubscriptionKey, trainingKey) { }
 
-        public async Task<CreateProjectResult> CreateProjectAsync(dynamic objectToProcess = null, 
+        public async Task<ResponseWrapper<CreateProjectResult>> CreateProjectAsync(dynamic objectToProcess = null, 
             Dictionary<string, string> parameters = null)
         {
             var apiRequest =  (new ApiCallDefinition()
@@ -61,7 +62,7 @@ namespace CognitiveAIApis.Services
             return await apiRequest.ProcessRequest<object, CreateProjectResult>();
         }
 
-        public async Task<CreateTagResult> CreateTagAsync(dynamic objectToProcess = null, 
+        public async Task<ResponseWrapper<CreateTagResult>> CreateTagAsync(dynamic objectToProcess = null, 
             Dictionary<string, string> parameters = null)
         {
             var apiRequest = (new ApiCallDefinition()
@@ -84,7 +85,7 @@ namespace CognitiveAIApis.Services
                     .ProcessRequest<object, CreateTagResult>();
         }
 
-        public async Task<CreateImagesResult> CreateImagesFromUrlsAsync(dynamic objectToProcess = null, 
+        public async Task<ResponseWrapper<CreateImagesResult>> CreateImagesFromUrlsAsync(dynamic objectToProcess = null, 
             Dictionary<string, string> parameters = null)
         {
             var apiRequest = (new ApiCallDefinition()
@@ -133,7 +134,7 @@ namespace CognitiveAIApis.Services
                         requestDictionary);
         }
 
-        public async Task<TrainingResult> TrainProjectAsync(dynamic objectToProcess = null, 
+        public async Task<ResponseWrapper<TrainingResult>> TrainProjectAsync(dynamic objectToProcess = null, 
             Dictionary<string, string> parameters = null)
         {
             var apiRequest = (new ApiCallDefinition()
@@ -153,7 +154,7 @@ namespace CognitiveAIApis.Services
                     .ProcessRequest<object, TrainingResult>();
         }
 
-        public async Task<List<Iteration>> GetIterations(dynamic objectToProcess = null, 
+        public async Task<ResponseWrapper<List<Iteration>>> GetIterations(dynamic objectToProcess = null, 
             Dictionary<string, string> parameters = null)
         {
             var apiRequest = (new ApiCallDefinition()
@@ -193,7 +194,7 @@ namespace CognitiveAIApis.Services
                     .ProcessRequest<object, object>();
         }
 
-        public async Task<QuickTestResult> QuickTestImageWithUrlAsync(string iterationId, string projectId, 
+        public async Task<ResponseWrapper<QuickTestResult>> QuickTestImageWithUrlAsync(string iterationId, string projectId, 
             dynamic objectToProcess = null, 
             Dictionary<string, string> parameters = null)
         {

@@ -12,15 +12,15 @@ using Newtonsoft.Json;
 
 namespace CognitiveAIApis.Infrastructure
 {
-    public class ApiDictHandler<TResult> : IRequestHandler<Dictionary<string, object>, TResult> where TResult: class
+    public class ApiDictHandler<TResult> : IRequestHandler<Dictionary<string, object>, ResponseWrapper<TResult>> where TResult: class
     {
         readonly Func<Dictionary<string, object>, HttpRequestMessage> PostRequestAction;
-        readonly Func<HttpResponseMessage, TResult> PreRequestAction;
+        readonly Func<HttpResponseMessage, ResponseWrapper<TResult>> PreRequestAction;
         readonly Dictionary<string, object> ApiRequest;
         public ApiDictHandler(
             Dictionary<string, object> apiRequest,
             Func<Dictionary<string, object>, HttpRequestMessage> postRequestAction = null,
-            Func<HttpResponseMessage, TResult> preRequestAction = null)
+            Func<HttpResponseMessage, ResponseWrapper<TResult>> preRequestAction = null)
         {
             var headers = (Dictionary<string, string>)apiRequest["Headers"];
             ApiRequest = apiRequest;
@@ -31,7 +31,7 @@ namespace CognitiveAIApis.Infrastructure
                 ? GetPreRequestAction() : preRequestAction;
         }
 
-        public async Task<TResult> HandleRequestAsync(Dictionary<string, object> apiRequest = null)
+        public async Task<ResponseWrapper<TResult>> HandleRequestAsync(Dictionary<string, object> apiRequest = null)
         {
             HttpResponseMessage response = new HttpResponseMessage();
             apiRequest = apiRequest ?? ApiRequest;
@@ -50,9 +50,9 @@ namespace CognitiveAIApis.Infrastructure
                     .Catch<HttpRequestException>(exception => exception is HttpRequestException && response.StatusCode == HttpStatusCode.RequestTimeout)
                     .ExecuteAction(async () =>
                     {
-                        response = await client.SendAsync(request);
-                        if(response.StatusCode != HttpStatusCode.OK)
+                        if(response.IsSuccessStatusCode)
                         {
+                            response = await client.SendAsync(request);
                             var responseString = await response.Content.ReadAsStringAsync();
                             var requestString = await request.Content.ReadAsStringAsync();
                         }
@@ -77,9 +77,11 @@ namespace CognitiveAIApis.Infrastructure
         {
             var parameters = apiRequest.ContainsKey("Parameters") ? (Dictionary<string, string>)apiRequest["Parameters"] : null;
             var queryString = parameters?.Count > 0 ? $"?{GetParametersString(parameters)}" : "";
-            var subPath = !String.IsNullOrEmpty((string)apiRequest["Operation_SubPath"]) 
+            var subPath = apiRequest.ContainsKey("Operation_SubPath") 
                 ? $"/{apiRequest["Operation_SubPath"]}" : "";
-            var requestUriString = $"{apiRequest["Endpoint_Uri"]}/{apiRequest["Endpoint_Version"]}/{apiRequest["Operation_Path"]}{subPath}{queryString}";
+            var requestUriString = apiRequest.ContainsKey("Endpoint_Version") 
+                ? $"{apiRequest["Endpoint_Uri"]}/{apiRequest["Endpoint_Version"]}/{apiRequest["Operation_Path"]}{subPath}{queryString}"
+                : $"{apiRequest["Endpoint_Uri"]}/{apiRequest["Operation_Path"]}{subPath}{queryString}";
             
             request.Method = new HttpMethod((string)apiRequest["Operation_Method"]);
             request.RequestUri = new Uri(requestUriString);
@@ -125,12 +127,26 @@ namespace CognitiveAIApis.Infrastructure
             };
         }
 
-        private static Func<HttpResponseMessage, TResult> GetPreRequestAction()
+        private static Func<HttpResponseMessage, ResponseWrapper<TResult>> GetPreRequestAction()
         {
-            return new Func<HttpResponseMessage, TResult>((responseMessage) =>
+            return new Func<HttpResponseMessage, ResponseWrapper<TResult>>((responseMessage) =>
             {
-                var jsonContent = responseMessage.Content.ReadAsStringAsync().Result;
-                var resultToReturn = JsonConvert.DeserializeObject<TResult>(jsonContent);
+                var resultToReturn = new ResponseWrapper<TResult>()
+                {
+                    ResponseContent = null,
+                    IsSuccessfull = responseMessage.IsSuccessStatusCode,
+                    ReasonPhrase = responseMessage.ReasonPhrase,
+                    StatusCode = Enum.GetName(typeof(HttpStatusCode),
+                        responseMessage.StatusCode)
+                };
+
+                if (responseMessage.IsSuccessStatusCode)
+                {
+                    var jsonContent = responseMessage.Content.ReadAsStringAsync().Result;
+                    resultToReturn.ResponseContent = typeof(TResult) is object 
+                        ? (TResult)JsonConvert.DeserializeObject(jsonContent)
+                        : JsonConvert.DeserializeObject<TResult>(jsonContent);
+                }
                 return resultToReturn;
             });
         }

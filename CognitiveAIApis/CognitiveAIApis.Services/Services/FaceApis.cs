@@ -80,7 +80,7 @@ namespace CognitiveAIApis.Services
                 await apiRequest.ProcessRequest<object, List<DetectedFace>>(); 
         }
 
-        public async Task<List<DetectedFace>> DetectFacesWithUrlAsync(object objectToProcess, 
+        public async Task<ResponseWrapper<List<DetectedFace>>> DetectFacesWithUrlAsync(object objectToProcess, 
             Dictionary<string, string> parameters = null)
         {
             var apiRequest = (new ApiCallDefinition()

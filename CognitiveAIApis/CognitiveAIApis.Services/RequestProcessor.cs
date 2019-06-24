@@ -37,9 +37,9 @@ namespace CognitiveAIApis.Services
             return await requestHandler.HandleRequestAsync();
         }
 
-        public static async Task<TResult> ProcessRequest<TResult>(Dictionary<string, object> requestDictionary,
+        public static async Task<ResponseWrapper<TResult>> ProcessRequest<TResult>(Dictionary<string, object> requestDictionary,
             Func<Dictionary<string, object>, HttpRequestMessage> postRequestAction = null,
-            Func<HttpResponseMessage, TResult> preRequestAction = null)
+            Func<HttpResponseMessage, ResponseWrapper<TResult>> preRequestAction = null)
             where TResult : class
         {
 

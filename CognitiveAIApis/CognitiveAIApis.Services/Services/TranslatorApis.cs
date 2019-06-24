@@ -1,0 +1,39 @@
+﻿using CognitiveAIApis.Infrastructure;
+using CognitiveAIApis.Services.Helpers;
+using CognitiveAIApis.Services.Models;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace CognitiveAIApis.Services
+{
+    public class TranslatorApis
+    {
+        private readonly string _endpointUri = "https://api.cognitive.microsofttranslator.com";
+        private readonly Dictionary<string, string> _headers;
+        public TranslatorApis(string subscriptionKey, string region = "")
+        {
+            _headers = new Dictionary<string, string>()
+                .with("Ocp-Apim-Subscription-Key", subscriptionKey);
+            if(!String.IsNullOrEmpty(region))
+                _headers.Add("Ocp-Apim-Subscription-Region", region);
+        }
+
+        public async Task<ResponseWrapper<object>> Detect(dynamic objectToProcess, Dictionary<string, string> parameters = null)
+        {
+            var requestDefinition = new ApiCallDefinition()
+                .WithEndpoint(_endpointUri)
+                .WithHeaders(_headers)
+                .WithContentType("application/json")
+                .WithMethod("POST")
+                .WithOperationPath("detect")
+                .WithParameters(
+                    parameters
+                        .InitializeIfNull()
+                        .with("api-version", "3.0"))
+                .WithPayload<object[]>(objectToProcess);
+            return await requestDefinition.ProcessRequest<object[], object>();
+        }
+    }
+}
