@@ -43,7 +43,7 @@ namespace CognitiveAIApis.Services
             {
                 BinaryReader binaryReader = new BinaryReader(fileStream);
                 var bytes = binaryReader.ReadBytes((int)fileStream.Length);
-                var apiRequest = (new ApiCallDefinition()
+                var apiRequest = (new RestOperationDefinition()
                     .WithEndpoint(_endpointUri)
                     .WithVersion(_version)
                     .WithMethod("POST")
@@ -63,7 +63,7 @@ namespace CognitiveAIApis.Services
         public async Task<object> DetectFacesFromUrlAsync(object objectToProcess, 
             Dictionary<string, string> parameters = null)
         {
-            var apiRequest = (new ApiCallDefinition()
+            var apiRequest = (new RestOperationDefinition()
                 .WithEndpoint(_endpointUri)
                 .WithVersion(_version)
                 .WithMethod("POST")
@@ -83,7 +83,7 @@ namespace CognitiveAIApis.Services
         public async Task<ResponseWrapper<List<DetectedFace>>> DetectFacesWithUrlAsync(object objectToProcess, 
             Dictionary<string, string> parameters = null)
         {
-            var apiRequest = (new ApiCallDefinition()
+            var apiRequest = (new RestOperationDefinition()
                 .WithEndpoint(_endpointUri)
                 .WithVersion(_version)
                 .WithMethod("POST")

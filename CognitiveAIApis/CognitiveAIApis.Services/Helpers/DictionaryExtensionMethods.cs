@@ -26,5 +26,17 @@ namespace CognitiveAIApis.Services.Helpers
         {
             return  (source = source ?? new Dictionary<TKey, TValue>());
         }
+
+        public static Dictionary<TKey, TValue> AddOrReplaceKeyValuePair<TKey, TValue>(this Dictionary<TKey, TValue> source,
+            TKey key, TValue value)
+        {
+            if (source.ContainsKey(key))
+                source[key] = value;
+            else
+            {
+                source.Add(key, value);
+            }
+            return source;
+        }
     }
 }

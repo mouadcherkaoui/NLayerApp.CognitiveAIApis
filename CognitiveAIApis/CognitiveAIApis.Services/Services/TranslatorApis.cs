@@ -15,14 +15,13 @@ namespace CognitiveAIApis.Services
         public TranslatorApis(string subscriptionKey, string region = "")
         {
             _headers = new Dictionary<string, string>()
-                .with("Ocp-Apim-Subscription-Key", subscriptionKey);
-            if(!String.IsNullOrEmpty(region))
-                _headers.Add("Ocp-Apim-Subscription-Region", region);
+                .with("Ocp-Apim-Subscription-Key", subscriptionKey)
+                .with("Ocp-Apim-Subscription-Region", region);
         }
 
         public async Task<ResponseWrapper<object>> Detect(dynamic objectToProcess, Dictionary<string, string> parameters = null)
         {
-            var requestDefinition = new ApiCallDefinition()
+            var requestDefinition = new RestOperationDefinition()
                 .WithEndpoint(_endpointUri)
                 .WithHeaders(_headers)
                 .WithContentType("application/json")

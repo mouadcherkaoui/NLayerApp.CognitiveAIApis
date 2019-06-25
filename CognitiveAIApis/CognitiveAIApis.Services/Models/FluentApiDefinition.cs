@@ -6,28 +6,37 @@ namespace CognitiveAIApis.Services.Models
 {
     public interface IFluentApiDefinition
     {
-        IFluentEndpoint WithEndpoint(string endpoint);
+        IFluentEndpoint HasEndpointUri(string endpoint);
 
     }
 
     public interface IFluentEndpoint
     {
-        IFluentEndpoint WithSubscriptionKey(string SubscriptionKey);
 
-        IFluentVersionedEndpoint WithVersion(string version);
+        IFluentVersionedEndpoint OfVersion(string apiVersion);
     }
 
     public interface IFluentVersionedEndpoint
     {
-        IFluentMethod WithContentType(string ContentType);
-        IFluentMethod WithParameters(Dictionary<string, string> Parameters);
-        IFluentMethod WithHeaders(Dictionary<string, string> headers);
+        IFluentVersionedEndpoint WithSubscriptionKey(string SubscriptionKey);
+
+        IFluentMethod AndMethod(string method);
     }
 
     public interface IFluentMethod
     {
+        IFluentMethod WithContentType(string ContentType);
+        IFluentMethodWithHeaders WithHeaders(Dictionary<string, string> headers);
         TResponse ProcessRequest<TRequest, TResponse>(TRequest request);
     }
+
+    public interface IFluentMethodWithHeaders
+    {
+        IFluentMethodWithHeaders AndContentType(string ContentType);
+        IFluentMethodWithHeaders AndParameters(Dictionary<string, string> headers);
+        TResponse ProcessRequest<TRequest, TResponse>();
+    }
+
     public class FluentApiDefinition : IFluentApiDefinition
     {
         Dictionary<string, object> _innerDict = new Dictionary<string, object>();
@@ -36,36 +45,25 @@ namespace CognitiveAIApis.Services.Models
         {
             _innerDict = requestDict ?? new Dictionary<string, object>();
         }
-        public IFluentEndpoint WithEndpoint(string endpointUri)
+        public IFluentEndpoint HasEndpointUri(string endpointUri)
         {
             definition.EndpointUri = endpointUri;
             return definition;
         }
 
-        public IFluentEndpoint WithSubscriptionKey(string SubscriptionKey)
-        {
-            definition.SubscriptionKey = SubscriptionKey;
-            return definition;
-        }
     }
 
     public class EndpointDefinition : IFluentEndpoint
     {
-        public IFluentVersionedEndpoint WithVersion(string version)
+        public IFluentVersionedEndpoint OfVersion(string version)
         {
             Version = version;
             return new EndpointWithVersionDefinition(this) { };
         }
-
-        public IFluentEndpoint WithSubscriptionKey(string subscriptionKey)
-        {
-            SubscriptionKey = subscriptionKey;
-            return this;
-        }
-
         public string EndpointUri { get; set; }
         public string Version { get; set; }
         public string SubscriptionKey { get; set; }
+
     }
 
     public class EndpointWithVersionDefinition : IFluentVersionedEndpoint
@@ -78,6 +76,7 @@ namespace CognitiveAIApis.Services.Models
             Endpoint_SubscriptionKey = definition.SubscriptionKey;
             method = new FluentApiMethod();
         }
+
         public IFluentMethod WithContentType(string ContentType)
         {
             throw new NotImplementedException();
@@ -89,6 +88,16 @@ namespace CognitiveAIApis.Services.Models
         }
 
         public IFluentMethod WithParameters(Dictionary<string, string> Parameters)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IFluentMethod AndMethod(string method)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IFluentVersionedEndpoint WithSubscriptionKey(string SubscriptionKey)
         {
             throw new NotImplementedException();
         }
@@ -105,6 +114,22 @@ namespace CognitiveAIApis.Services.Models
         {
             throw new NotImplementedException();
         }
+
+        public IFluentMethod WithContentType(string ContentType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IFluentMethod WithParameters(Dictionary<string, string> Parameters)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IFluentMethodWithHeaders WithHeaders(Dictionary<string, string> headers)
+        {
+            throw new NotImplementedException();
+        }
+
         public Dictionary<string, string> Headers { get; set; }
         public Dictionary<string, string> Parameters { get; set; }
     }
@@ -113,7 +138,15 @@ namespace CognitiveAIApis.Services.Models
     {
         void test()
         {
-
+            new FluentApiDefinition()
+                .HasEndpointUri("")
+                .OfVersion("")
+                .WithSubscriptionKey("")
+                .AndMethod("")
+                .WithContentType("")
+                .WithHeaders(default)
+                .AndParameters(default)
+                .AndContentType(default);
         }
     }
 }

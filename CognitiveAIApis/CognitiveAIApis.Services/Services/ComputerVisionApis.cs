@@ -43,7 +43,7 @@ namespace CognitiveAIApis.Services
                 BinaryReader binaryReader = new BinaryReader(fileStream);
                 var bytes = binaryReader.ReadBytes((int)fileStream.Length);
 
-                var apiRequest = (new ApiCallDefinition()
+                var apiRequest = (new RestOperationDefinition()
                     .WithEndpoint(_endpointUri)
                     .WithVersion(_version)
                     .WithMethod("POST")
@@ -60,7 +60,7 @@ namespace CognitiveAIApis.Services
         public async Task<object> AnalyzeImageWithUrl(object objectToProcess = null,
             Dictionary<string, string> parameters = null)
         {
-            var apiRequest = (new ApiCallDefinition()
+            var apiRequest = (new RestOperationDefinition()
                 .WithEndpoint(_endpointUri)
                 .WithVersion(_version)
                 .WithMethod("POST")
@@ -83,7 +83,7 @@ namespace CognitiveAIApis.Services
                 BinaryReader binaryReader = new BinaryReader(fileStream);
                 var bytes = binaryReader.ReadBytes((int)fileStream.Length);
 
-                var apiRequest = (new ApiCallDefinition()
+                var apiRequest = (new RestOperationDefinition()
                     .WithEndpoint(_endpointUri)
                     .WithVersion(_version)
                     .WithMethod("POST")
@@ -100,7 +100,7 @@ namespace CognitiveAIApis.Services
         public async Task<object> DescribeImageWithUrl(object objectToProcess = null,
             Dictionary<string, string> parameters = null)
         {
-            var apiRequest = (new ApiCallDefinition()
+            var apiRequest = (new RestOperationDefinition()
                 .WithEndpoint(_endpointUri)
                 .WithVersion(_version)
                 .WithMethod("POST")
@@ -117,7 +117,7 @@ namespace CognitiveAIApis.Services
         public async Task<object> DetectObjectsWithUrl(object objectToProcess = null,
             Dictionary<string, string> parameters = null)
         {
-            var apiRequest = (new ApiCallDefinition()
+            var apiRequest = (new RestOperationDefinition()
                 .WithEndpoint(_endpointUri)
                 .WithVersion(_version)
                 .WithMethod("POST")
@@ -135,7 +135,7 @@ namespace CognitiveAIApis.Services
         public async Task<object> GetAreaOfInterestWithUrl(object objectToProcess = null,
             Dictionary<string, string> parameters = null)
         {
-            var apiRequest = (new ApiCallDefinition()
+            var apiRequest = (new RestOperationDefinition()
                 .WithEndpoint(_endpointUri)
                 .WithVersion(_version)
                 .WithMethod("POST")

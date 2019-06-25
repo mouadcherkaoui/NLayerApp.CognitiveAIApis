@@ -35,136 +35,136 @@ namespace CognitiveAIApis.Services
             var speechApis = new TranslatorApis(subscriptionKey, "westus");
             var result = speechApis.Detect(new[] { new { Text = "Text detection test using Translator Apis" } }).Result;
             Console.WriteLine(result);
-            //var visionApis = new CustomVisionApis(credential, trainingKey: "5db8186f847f43079668979adf24f8f3");
-            //var result = visionApis.CreateProjectAsync(new { name = "testProject"}).Result.ResponseContent;
-            //dynamic tagResult0 = visionApis.CreateTagAsync(new { projectId = result.id, tagName = "fork" }).Result;
-            //dynamic tagResult1 = visionApis.CreateTagAsync(new { projectId = result.id, tagName = "scissor" }).Result;
+            var visionApis = new CustomVisionApis(credential, trainingKey: "5db8186f847f43079668979adf24f8f3");
+            var prjresult = visionApis.CreateProjectAsync(new { name = "testProject" }).Result.ResponseContent;
+            dynamic tagResult0 = visionApis.CreateTagAsync(new { projectId = prjresult?.id, tagName = "fork" }).Result;
+            dynamic tagResult1 = visionApis.CreateTagAsync(new { projectId = prjresult?.id, tagName = "scissor" }).Result;
 
-            //tagResult0 = tagResult0.ResponseContent;
-            //tagResult1 = tagResult1.ResponseContent;
+            tagResult0 = tagResult0.ResponseContent;
+            tagResult1 = tagResult1.ResponseContent;
 
-            //var requestObject = new CreateImagesRequest()
-            //{
-            //    images = new List<ImageUrl>
-            //    {
-            //        new ImageUrl
-            //        {
-            //            url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/fork/fork_1.jpg?raw=true",
-            //            tagIds = new List<string>{ tagResult0.id }
-            //        },
-            //        new ImageUrl
-            //        {
-            //            url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/fork/fork_2.jpg?raw=true",
-            //            tagIds = new List<string>{ tagResult0.id }
-            //        },
-            //        new ImageUrl
-            //        {
-            //            url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/fork/fork_3.jpg?raw=true",
-            //            tagIds = new List<string>{ tagResult0.id }
-            //        },
-            //        new ImageUrl
-            //        {
-            //            url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/fork/fork_4.jpg?raw=true",
-            //            tagIds = new List<string>{ tagResult0.id }
-            //        },
-            //        new ImageUrl
-            //        {
-            //            url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/fork/fork_5.jpg?raw=true",
-            //            tagIds = new List<string>{ tagResult0.id }
-            //        },
-            //        new ImageUrl
-            //        {
-            //            url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/fork/fork_6.jpg?raw=true",
-            //            tagIds = new List<string>{ tagResult0.id }
-            //        },
-            //        new ImageUrl
-            //        {
-            //            url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/fork/fork_7.jpg?raw=true",
-            //            tagIds = new List<string>{ tagResult0.id }
-            //        },
-            //        new ImageUrl
-            //        {
-            //            url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/fork/fork_8.jpg?raw=true",
-            //            tagIds = new List<string>{ tagResult0.id }
-            //        },
-            //        new ImageUrl
-            //        {
-            //            url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/fork/fork_9.jpg?raw=true",
-            //            tagIds = new List<string>{ tagResult0.id }
-            //        },
-            //        new ImageUrl
-            //        {
-            //            url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/fork/fork_10.jpg?raw=true",
-            //            tagIds = new List<string>{ tagResult0.id }
-            //        },
-            //        new ImageUrl
-            //        {
-            //            url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/fork/fork_11.jpg?raw=true",
-            //            tagIds = new List<string>{ tagResult0.id }
-            //        },
-            //        new ImageUrl
-            //        {
-            //            url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/scissors/scissors_1.jpg?raw=true",
-            //            tagIds = new List<string>{ tagResult1.id}
-            //        },
-            //        new ImageUrl
-            //        {
-            //            url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/scissors/scissors_2.jpg?raw=true",
-            //            tagIds = new List<string>{ tagResult1.id}
-            //        },
-            //        new ImageUrl
-            //        {
-            //            url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/scissors/scissors_3.jpg?raw=true",
-            //            tagIds = new List<string>{ tagResult1.id}
-            //        },
-            //        new ImageUrl
-            //        {
-            //            url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/scissors/scissors_4.jpg?raw=true",
-            //            tagIds = new List<string>{ tagResult1.id}
-            //        },
-            //        new ImageUrl
-            //        {
-            //            url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/scissors/scissors_5.jpg?raw=true",
-            //            tagIds = new List<string>{ tagResult1.id}
-            //        },
-            //        new ImageUrl
-            //        {
-            //            url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/scissors/scissors_6.jpg?raw=true",
-            //            tagIds = new List<string>{ tagResult1.id}
-            //        },
-            //        new ImageUrl
-            //        {
-            //            url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/scissors/scissors_7.jpg?raw=true",
-            //            tagIds = new List<string>{ tagResult1.id}
-            //        },
-            //        new ImageUrl
-            //        {
-            //            url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/scissors/scissors_8.jpg?raw=true",
-            //            tagIds = new List<string>{ tagResult1.id}
-            //        },
-            //        new ImageUrl
-            //        {
-            //            url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/scissors/scissors_9.jpg?raw=true",
-            //            tagIds = new List<string>{ tagResult1.id}
-            //        },
-            //        new ImageUrl
-            //        {
-            //            url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/scissors/scissors_10.jpg?raw=true",
-            //            tagIds = new List<string>{ tagResult1.id}
-            //        },
-            //        new ImageUrl
-            //        {
-            //            url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/scissors/scissors_11.jpg?raw=true",
-            //            tagIds = new List<string>{ tagResult1.id}
-            //        }
-            //    }
-            //};
-            //var tagIds = requestObject.images.Select(i => i.tagIds).Aggregate((l1, l2) => l1.Concat(l2).ToList());
-            //var createImagesResult = visionApis.CreateImagesFromUrlsAsync(new { projectId = result.id, requestObject = requestObject }).Result;
-            //var trainingResult = visionApis.TrainProjectAsync(new { projectId = result.id }).Result;
-            //var iterations = visionApis.GetIterations(new { projectId = result.id }).Result;
-            //var updateIterationResult = visionApis.UpdateIteration(new { projectId = result.id, iterationId = iterations.ResponseContent[0].id, iteration = new { isDefault=true } }).Result;
-            //var quicktest = visionApis.QuickTestImageWithUrlAsync(iterations.ResponseContent[0].id, result.id, new { url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/scissors/scissors_15.jpg?raw=true" }).Result;
+            var requestObject = new CreateImagesRequest()
+            {
+                images = new List<ImageUrl>
+                {
+                    new ImageUrl
+                    {
+                        url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/fork/fork_1.jpg?raw=true",
+                        tagIds = new List<string>{ tagResult0?.id}
+                    },
+                    new ImageUrl
+                    {
+                        url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/fork/fork_2.jpg?raw=true",
+                        tagIds = new List<string>{ tagResult0?.id}
+                    },
+                    new ImageUrl
+                    {
+                        url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/fork/fork_3.jpg?raw=true",
+                        tagIds = new List<string>{ tagResult0?.id}
+                    },
+                    new ImageUrl
+                    {
+                        url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/fork/fork_4.jpg?raw=true",
+                        tagIds = new List<string>{ tagResult0?.id}
+                    },
+                    new ImageUrl
+                    {
+                        url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/fork/fork_5.jpg?raw=true",
+                        tagIds = new List<string>{ tagResult0?.id}
+                    },
+                    new ImageUrl
+                    {
+                        url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/fork/fork_6.jpg?raw=true",
+                        tagIds = new List<string>{ tagResult0?.id}
+                    },
+                    new ImageUrl
+                    {
+                        url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/fork/fork_7.jpg?raw=true",
+                        tagIds = new List<string>{ tagResult0?.id}
+                    },
+                    new ImageUrl
+                    {
+                        url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/fork/fork_8.jpg?raw=true",
+                        tagIds = new List<string>{ tagResult0?.id}
+                    },
+                    new ImageUrl
+                    {
+                        url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/fork/fork_9.jpg?raw=true",
+                        tagIds = new List<string>{ tagResult0?.id}
+                    },
+                    new ImageUrl
+                    {
+                        url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/fork/fork_10.jpg?raw=true",
+                        tagIds = new List<string>{ tagResult0?.id}
+                    },
+                    new ImageUrl
+                    {
+                        url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/fork/fork_11.jpg?raw=true",
+                        tagIds = new List<string>{ tagResult0?.id}
+                    },
+                    new ImageUrl
+                    {
+                        url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/scissors/scissors_1.jpg?raw=true",
+                        tagIds = new List<string>{ tagResult1?.id}
+                    },
+                    new ImageUrl
+                    {
+                        url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/scissors/scissors_2.jpg?raw=true",
+                        tagIds = new List<string>{ tagResult1?.id}
+                    },
+                    new ImageUrl
+                    {
+                        url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/scissors/scissors_3.jpg?raw=true",
+                        tagIds = new List<string>{ tagResult1?.id}
+                    },
+                    new ImageUrl
+                    {
+                        url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/scissors/scissors_4.jpg?raw=true",
+                        tagIds = new List<string>{ tagResult1?.id}
+                    },
+                    new ImageUrl
+                    {
+                        url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/scissors/scissors_5.jpg?raw=true",
+                        tagIds = new List<string>{ tagResult1?.id}
+                    },
+                    new ImageUrl
+                    {
+                        url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/scissors/scissors_6.jpg?raw=true",
+                        tagIds = new List<string>{ tagResult1?.id}
+                    },
+                    new ImageUrl
+                    {
+                        url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/scissors/scissors_7.jpg?raw=true",
+                        tagIds = new List<string>{ tagResult1?.id}
+                    },
+                    new ImageUrl
+                    {
+                        url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/scissors/scissors_8.jpg?raw=true",
+                        tagIds = new List<string>{ tagResult1?.id}
+                    },
+                    new ImageUrl
+                    {
+                        url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/scissors/scissors_9.jpg?raw=true",
+                        tagIds = new List<string>{ tagResult1?.id}
+                    },
+                    new ImageUrl
+                    {
+                        url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/scissors/scissors_10.jpg?raw=true",
+                        tagIds = new List<string>{ tagResult1?.id}
+                    },
+                    new ImageUrl
+                    {
+                        url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/scissors/scissors_11.jpg?raw=true",
+                        tagIds = new List<string>{ tagResult1?.id}
+                    }
+                }
+            };
+            var tagIds = requestObject.images.Select(i => i.tagIds).Aggregate((l1, l2) => l1.Concat(l2).ToList());
+            var createImagesResult = visionApis.CreateImagesFromUrlsAsync(new { projectId = prjresult?.id, requestObject = requestObject }).Result;
+            var trainingResult = visionApis.TrainProjectAsync(new { projectId = prjresult?.id }).Result;
+            var iterations = visionApis.GetIterations(new { projectId = prjresult?.id }).Result;
+            var updateIterationResult = visionApis.UpdateIteration(new { projectId = prjresult?.id, iterationId = iterations?.ResponseContent?[0].id, iteration = new { isDefault = true } }).Result;
+            var quicktest = visionApis.QuickTestImageWithUrlAsync(iterations?.ResponseContent?[0].id, prjresult?.id, new { url = "https://github.com/Azure/LearnAI-Bootcamp/blob/master/lab01.3_customvision02/Resources/Starter/CustomVision.Sample/Images/scissors/scissors_15.jpg?raw=true" }).Result;
         }
 
         static async Task WaitCallLimitPerSecondAsync()

@@ -35,7 +35,7 @@ namespace CognitiveAIApis.Services
         }
         public async Task<FaceList> CreateFaceListAsync(dynamic objectToProcess = null, Dictionary<string, string> parameters = null)
         {
-            var apiRequest = (new ApiCallDefinition()
+            var apiRequest = (new RestOperationDefinition()
                 .WithEndpoint(_endpointUri)
                 .WithVersion(_version)
                 .WithMethod("PUT")
@@ -56,7 +56,7 @@ namespace CognitiveAIApis.Services
 
         public async Task<object> DeleteFaceListAsync(dynamic objectToProcess = null, Dictionary<string, string> parameters = null)
         {
-            var apiRequest = (new ApiCallDefinition()
+            var apiRequest = (new RestOperationDefinition()
                 .WithEndpoint(_endpointUri)
                 .WithVersion(_version)
                 .WithMethod("DELETE")
@@ -80,7 +80,7 @@ namespace CognitiveAIApis.Services
                 BinaryReader binaryReader = new BinaryReader(fileStream);
                 var bytes = binaryReader.ReadBytes((int)fileStream.Length);
 
-                var apiRequest = (new ApiCallDefinition()
+                var apiRequest = (new RestOperationDefinition()
                     .WithEndpoint(_endpointUri)
                     .WithVersion(_version)
                     .WithMethod("POST")
@@ -103,7 +103,7 @@ namespace CognitiveAIApis.Services
         public async Task<object> AddFaceWithUrlAsync(dynamic objectToProcess = null, 
             Dictionary<string, string> parameters = null)
         {
-            var apiRequest = (new ApiCallDefinition()
+            var apiRequest = (new RestOperationDefinition()
                 .WithEndpoint(_endpointUri)
                 .WithVersion(_version)
                 .WithMethod("POST")
@@ -123,7 +123,7 @@ namespace CognitiveAIApis.Services
 
         public async Task<object> GetFaceListAsync(dynamic objectToProcess = null, Dictionary<string, string> parameters = null)
         {
-            var apiRequest = (new ApiCallDefinition()
+            var apiRequest = (new RestOperationDefinition()
                 .WithEndpoint(_endpointUri)
                 .WithVersion(_version)
                 .WithMethod("GET")
@@ -144,7 +144,7 @@ namespace CognitiveAIApis.Services
 
         public async Task<object> ListFaceListsAsync(dynamic objectToProcess = null, Dictionary<string, string> parameters = null)
         {
-            var apiRequest = (new ApiCallDefinition()
+            var apiRequest = (new RestOperationDefinition()
                 .WithEndpoint(_endpointUri)
                 .WithVersion(_version)
                 .WithMethod("GET")

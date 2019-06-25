@@ -21,7 +21,7 @@ namespace CognitiveAIApis.Services
         private readonly string _subscriptionKey;
         private readonly string _trainingKey;
         private readonly Dictionary<string, string> _headers;
-
+        private readonly IOperationDefinition _apiCallDefinition;
 
         public CustomVisionApis(string endpointUri, string version, string subscriptionKey, string trainingKey = "")
         {
@@ -29,12 +29,18 @@ namespace CognitiveAIApis.Services
             _version = version;
             _subscriptionKey = subscriptionKey;
             _trainingKey = trainingKey;
-            _headers = 
+            _headers =
                 new Dictionary<string, string>
                 {
                     { "Ocp-Apim-Subscription-Key", _subscriptionKey},
                     { "Accept", "application/json" }
                 };
+            _apiCallDefinition = new RestOperationDefinition()
+                 .WithEndpoint(_endpointUri)
+                 .WithVersion(_version)
+                 .WithSubscriptionKey(_subscriptionKey)
+                 .WithHeaders(_headers
+                     .with("Training-Key", _trainingKey));
         }
 
         public CustomVisionApis(ApiCredential credential, string trainingKey = "") 
@@ -43,21 +49,16 @@ namespace CognitiveAIApis.Services
         public async Task<ResponseWrapper<CreateProjectResult>> CreateProjectAsync(dynamic objectToProcess = null, 
             Dictionary<string, string> parameters = null)
         {
-            var apiRequest =  (new ApiCallDefinition()
-                .WithEndpoint(_endpointUri)
-                .WithVersion(_version)
+            var apiRequest =  _apiCallDefinition
                 .WithMethod("POST")
                 .WithOperationPath("training")
                 .WithOperationSubPath("projects")
-                .WithSubscriptionKey(_subscriptionKey)
-                .WithHeaders(_headers
-                    .with("Training-Key", _trainingKey))
                 .WithParameters(
                     parameters
                         .InitializeIfNull()
                         .with("name", "testProject"))
                 .WithContentType("application/json")
-                .WithPayload(objectToProcess));
+                .WithPayload(objectToProcess);
 
             return await apiRequest.ProcessRequest<object, CreateProjectResult>();
         }
@@ -65,21 +66,16 @@ namespace CognitiveAIApis.Services
         public async Task<ResponseWrapper<CreateTagResult>> CreateTagAsync(dynamic objectToProcess = null, 
             Dictionary<string, string> parameters = null)
         {
-            var apiRequest = (new ApiCallDefinition()
-                .WithEndpoint(_endpointUri)
-                .WithVersion(_version)
+            var apiRequest = _apiCallDefinition
                 .WithMethod("POST")
                 .WithOperationPath("training")
                 .WithOperationSubPath($"projects/{objectToProcess.projectId}/tags")
-                .WithSubscriptionKey(_subscriptionKey)
-                .WithHeaders(_headers
-                    .with("Training-Key", _trainingKey))
                 .WithParameters(
                     parameters
                         .InitializeIfNull()
                         .with("name", (string)objectToProcess.tagName))
                 .WithContentType("application/json")
-                .WithPayload(objectToProcess));
+                .WithPayload(objectToProcess);
 
             return await apiRequest
                     .ProcessRequest<object, CreateTagResult>();
@@ -88,18 +84,13 @@ namespace CognitiveAIApis.Services
         public async Task<ResponseWrapper<CreateImagesResult>> CreateImagesFromUrlsAsync(dynamic objectToProcess = null, 
             Dictionary<string, string> parameters = null)
         {
-            var apiRequest = (new ApiCallDefinition()
-                .WithEndpoint(_endpointUri)
-                .WithVersion(_version)
+            var apiRequest = _apiCallDefinition
                 .WithMethod("POST")
                 .WithOperationPath("training")
                 .WithOperationSubPath($"projects/{objectToProcess.projectId}/images/urls")
-                .WithSubscriptionKey(_subscriptionKey)
-                .WithHeaders(_headers
-                    .with("Training-Key", _trainingKey))
                 .WithParameters(parameters.InitializeIfNull())
                 .WithContentType("application/json")
-                .WithPayload(objectToProcess.requestObject));
+                .WithPayload(objectToProcess.requestObject);
 
             return
                 await apiRequest
@@ -137,17 +128,12 @@ namespace CognitiveAIApis.Services
         public async Task<ResponseWrapper<TrainingResult>> TrainProjectAsync(dynamic objectToProcess = null, 
             Dictionary<string, string> parameters = null)
         {
-            var apiRequest = (new ApiCallDefinition()
-                .WithEndpoint(_endpointUri)
-                .WithVersion(_version)
+            var apiRequest = _apiCallDefinition
                 .WithMethod("POST")
                 .WithOperationPath("training")
                 .WithOperationSubPath($"projects/{objectToProcess.projectId}/train")
-                .WithSubscriptionKey(_subscriptionKey)
-                .WithHeaders(_headers
-                    .with("Training-Key", _trainingKey))
                 .WithContentType("application/json")
-                .WithPayload(objectToProcess));
+                .WithPayload(objectToProcess);
 
             return
                 await apiRequest
@@ -157,17 +143,12 @@ namespace CognitiveAIApis.Services
         public async Task<ResponseWrapper<List<Iteration>>> GetIterations(dynamic objectToProcess = null, 
             Dictionary<string, string> parameters = null)
         {
-            var apiRequest = (new ApiCallDefinition()
-                .WithEndpoint(_endpointUri)
-                .WithVersion(_version)
+            var apiRequest = _apiCallDefinition
                 .WithMethod("GET")
                 .WithOperationPath("training")
                 .WithOperationSubPath($"projects/{objectToProcess.projectId}/iterations")
-                .WithSubscriptionKey(_subscriptionKey)
-                .WithHeaders(_headers
-                    .with("Training-Key", _trainingKey))
                 .WithContentType("application/json")
-                .WithPayload(objectToProcess));
+                .WithPayload(objectToProcess);
 
             return
                 await apiRequest
@@ -177,17 +158,12 @@ namespace CognitiveAIApis.Services
         public async Task<object> UpdateIteration(dynamic objectToProcess = null, 
             Dictionary<string, string> parameters = null)
         {
-            var apiRequest = (new ApiCallDefinition()
-                .WithEndpoint(_endpointUri)
-                .WithVersion(_version)
+            var apiRequest = _apiCallDefinition
                 .WithMethod("PATCH")
                 .WithOperationPath("training")
                 .WithOperationSubPath($"projects/{objectToProcess.projectId}/iterations/{objectToProcess.iterationId}")
-                .WithSubscriptionKey(_subscriptionKey)
-                .WithHeaders(_headers
-                    .with("Training-Key", _trainingKey))
                 .WithContentType("application/json")
-                .WithPayload(objectToProcess));
+                .WithPayload(objectToProcess);
 
             return
                 await apiRequest
@@ -198,21 +174,16 @@ namespace CognitiveAIApis.Services
             dynamic objectToProcess = null, 
             Dictionary<string, string> parameters = null)
         {
-            var apiRequest = (new ApiCallDefinition()
-                .WithEndpoint(_endpointUri)
-                .WithVersion(_version)
+            var apiRequest = _apiCallDefinition                
                 .WithMethod("POST")
                 .WithOperationPath("training")
                 .WithOperationSubPath($"projects/{projectId}/quicktest/url")
-                .WithSubscriptionKey(_subscriptionKey)
-                .WithHeaders(_headers
-                    .with("Training-Key", _trainingKey))
                 .WithParameters(
                     parameters
                         .InitializeIfNull()
                         .with("iterationId", iterationId))
                 .WithContentType("application/json")
-                .WithPayload(objectToProcess));
+                .WithPayload(objectToProcess);
 
             return
                 await apiRequest

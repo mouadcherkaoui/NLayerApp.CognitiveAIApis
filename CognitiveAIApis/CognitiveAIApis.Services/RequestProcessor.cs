@@ -43,7 +43,7 @@ namespace CognitiveAIApis.Services
             where TResult : class
         {
 
-            var requestHandler = new ApiDictHandler<TResult>(requestDictionary, postRequestAction, preRequestAction);
+            var requestHandler = new RestOperationHandler<TResult>(requestDictionary, postRequestAction, preRequestAction);
             return await requestHandler.HandleRequestAsync();
         }
     }
