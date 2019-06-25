@@ -32,13 +32,13 @@ namespace CognitiveAIApis.Services.Models
 
         public IOperationDefinition WithSubscriptionKey(string SubscriptionKey)
         {
-            _innerDict.AddOrReplaceKeyValuePair(nameof(SubscriptionKey), SubscriptionKey);
+            WithHeaders("Ocp-Apim-Subscription-Key", SubscriptionKey);
             return this;
         }
 
         public IOperationDefinition WithContentType(string ContentType)
         {
-            this.WithHeaders(nameof(ContentType), ContentType);
+            this.WithHeaders("Content-Type", ContentType);
             // _innerDict.Add(nameof(ContentType), ContentType);
             return this;
         }

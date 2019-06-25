@@ -30,7 +30,7 @@ namespace CognitiveAIApis.Infrastructure
 
             PostRequestAction = 
                 postRequestAction == null 
-                ?  (headers["ContentType"] == "application/json" 
+                ?  (!headers.ContainsKey("Content-Type") || headers["Content-Type"] == "application/json" 
                         ? GetPostRequestAction() 
                         : GetPostStreamRequestAction())
                 : postRequestAction;
@@ -44,11 +44,14 @@ namespace CognitiveAIApis.Infrastructure
             HttpResponseMessage response = new HttpResponseMessage();
             apiRequest = apiRequest ?? OperationRequest;
 
-            if (!ValidateApiCallRequest(apiRequest["RequestObject"]))
-                return new ResponseWrapper<TResult>() {
-                    IsSuccessfull = false,
-                    ReasonPhrase = "Validation Error"
-                };
+            var validationResults = new List<ValidationResult>();
+
+            //if (!ValidateApiCallRequest(apiRequest["RequestObject"], out validationResults))
+            //    return new ResponseWrapper<TResult>() {
+            //        IsSuccessfull = false,
+            //        ReasonPhrase = "Validation Error",
+            //        ValidationResults = validationResults
+            //    };
 
             using (var client = new HttpClient())
             {
@@ -64,22 +67,17 @@ namespace CognitiveAIApis.Infrastructure
                     .Catch<HttpRequestException>(exception => exception is HttpRequestException && response.StatusCode == HttpStatusCode.RequestTimeout)
                     .ExecuteAction(async () =>
                     {
-                        if(response.IsSuccessStatusCode)
-                        {
-                            response = await client.SendAsync(request);
-                            var responseString = await response.Content.ReadAsStringAsync();
-                            var requestString = await request.Content.ReadAsStringAsync();
-                        }
+                        response = await client.SendAsync(request);
                         var resultToReturn = PreRequestAction?.Invoke(response);
                         return resultToReturn;
-
                     });
             } 
         }
 
-        private bool ValidateApiCallRequest(object requestObject)
+        private bool ValidateApiCallRequest(object requestObject, 
+            out List<ValidationResult> validationResults)
         {
-            List<ValidationResult> validationResults = new List<ValidationResult>();
+            validationResults = new List<ValidationResult>();
             ValidationContext context = new ValidationContext(requestObject);
 
             Validator.TryValidateObject(requestObject, context, validationResults);
@@ -87,12 +85,16 @@ namespace CognitiveAIApis.Infrastructure
             return validationResults.Count == 0;
         }
 
-        private void AddRequestUri(Dictionary<string, object> apiRequest, ref HttpRequestMessage request)
+        private void AddRequestUri(Dictionary<string, object> apiRequest, 
+            ref HttpRequestMessage request)
         {
-            var parameters = apiRequest.ContainsKey("Parameters") ? (Dictionary<string, string>)apiRequest["Parameters"] : null;
+            var parameters = apiRequest.ContainsKey("Parameters") ? (Dictionary<string, string>)apiRequest["Parameters"] : default;
+
             var queryString = parameters?.Count > 0 ? $"?{GetParametersString(parameters)}" : "";
+
             var subPath = apiRequest.ContainsKey("Operation_SubPath") 
                 ? $"/{apiRequest["Operation_SubPath"]}" : "";
+
             var requestUriString = apiRequest.ContainsKey("Endpoint_Version") 
                 ? $"{apiRequest["Endpoint_Uri"]}/{apiRequest["Endpoint_Version"]}/{apiRequest["Operation_Path"]}{subPath}{queryString}"
                 : $"{apiRequest["Endpoint_Uri"]}/{apiRequest["Operation_Path"]}{subPath}{queryString}";
@@ -108,7 +110,8 @@ namespace CognitiveAIApis.Infrastructure
             return result;
         }
 
-        private void AddHeaders(Dictionary<string, string> headers, ref HttpRequestMessage request)
+        private void AddHeaders(Dictionary<string, string> headers, 
+            ref HttpRequestMessage request)
         {
             foreach (var item in headers)
             {
