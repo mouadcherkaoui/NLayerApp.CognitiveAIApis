@@ -6,7 +6,7 @@
 each api request object is defined through a fluent api that add required headers and parameters, the purpose of this helper is to simplify apis calls 
 
 ````csharp  
-            var apiRequest = (new ApiCallDefinition()
+            var restOperationRequest = (new RestOperationDefinition()
                 .WithEndpoint(_endpointUri)
                 .WithVersion(_version)
                 .WithMethod("POST")
@@ -25,4 +25,15 @@ each api request object is defined through a fluent api that add required header
             return await apiRequest
                     .ProcessRequest<object, CreateTagResult>();
 
-   `
+   ````
+the result of a processed request is wrapped in an object that indicate the operation status and validation results, thus we can have an idea about what happening while calling the API operation. 
+````csharp
+    public class ResponseWrapper<TResponse>
+    {
+        public string StatusCode { get; set; }
+        public bool IsSuccessfull { get; set; }
+        public string ReasonPhrase { get; set; }
+        public TResponse ResponseContent { get; set; }
+        public IEnumerable<ValidationResult> ValidationResults { get; set; }
+    }
+````
