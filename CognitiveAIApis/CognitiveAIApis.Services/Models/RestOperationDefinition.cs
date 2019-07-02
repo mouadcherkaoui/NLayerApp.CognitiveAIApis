@@ -1,12 +1,11 @@
 ﻿using CognitiveAIApis.Infrastructure;
-using CognitiveAIApis.Services.Helpers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using CognitiveAIApis.Infrastructure.Helpers;
 namespace CognitiveAIApis.Services.Models
 {
     public interface IOperationDefinition

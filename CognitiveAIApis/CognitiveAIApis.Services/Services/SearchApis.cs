@@ -1,12 +1,12 @@
 ﻿using CognitiveAIApis.Infrastructure;
-using CognitiveAIApis.Services.Helpers;
+using CognitiveAIApis.Infrastructure.Helpers;
 using CognitiveAIApis.Services.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CognitiveAIApis.Services.Services
+namespace CognitiveAIApis.Services
 {
     public class SearchApis
     {

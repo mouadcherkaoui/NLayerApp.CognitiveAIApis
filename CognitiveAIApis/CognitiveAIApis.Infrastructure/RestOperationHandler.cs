@@ -46,12 +46,13 @@ namespace CognitiveAIApis.Infrastructure
 
             var validationResults = new List<ValidationResult>();
 
-            //if (!ValidateApiCallRequest(apiRequest["RequestObject"], out validationResults))
-            //    return new ResponseWrapper<TResult>() {
-            //        IsSuccessfull = false,
-            //        ReasonPhrase = "Validation Error",
-            //        ValidationResults = validationResults
-            //    };
+            if (!ValidateApiCallRequest(apiRequest["RequestObject"], out validationResults))
+                return new ResponseWrapper<TResult>()
+                {
+                    IsSuccessfull = false,
+                    ReasonPhrase = "Validation Error",
+                    ValidationResults = validationResults
+                };
 
             using (var client = new HttpClient())
             {

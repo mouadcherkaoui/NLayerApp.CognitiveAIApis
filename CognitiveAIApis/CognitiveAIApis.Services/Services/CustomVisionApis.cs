@@ -1,6 +1,6 @@
 ﻿using CognitiveAIApis.Infrastructure;
 using CognitiveAIApis.Models.CustomVision;
-using CognitiveAIApis.Services.Helpers;
+using CognitiveAIApis.Infrastructure.Helpers;
 using CognitiveAIApis.Services.Models;
 using Newtonsoft.Json;
 using System;

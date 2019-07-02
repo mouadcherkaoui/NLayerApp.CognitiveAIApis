@@ -1,5 +1,5 @@
 ﻿using CognitiveAIApis.Infrastructure;
-using CognitiveAIApis.Services.Helpers;
+using CognitiveAIApis.Infrastructure.Helpers;
 using CognitiveAIApis.Services.Models;
 using System;
 using System.Collections.Generic;

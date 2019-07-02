@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using CognitiveAIApis.Services.Models;
 using System.Security;
-using CognitiveAIApis.Services.Helpers;
+using CognitiveAIApis.Infrastructure.Helpers;
 
 namespace CognitiveAIApis.Services
 {

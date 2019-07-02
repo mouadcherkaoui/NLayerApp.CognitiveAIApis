@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 using CognitiveAIApis.Infrastructure;
 using CognitiveAIApis.Services.Models;
 using System.Linq;
-using CognitiveAIApis.Services.Helpers;
+using CognitiveAIApis.Infrastructure.Helpers;
 
 namespace CognitiveAIApis.Services
 {

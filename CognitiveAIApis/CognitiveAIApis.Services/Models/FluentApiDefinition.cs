@@ -1,8 +1,7 @@
-﻿using CognitiveAIApis.Services.Helpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
+using CognitiveAIApis.Infrastructure.Helpers;
 namespace CognitiveAIApis.Services.Models
 {
     public interface IFluentApiDefinition

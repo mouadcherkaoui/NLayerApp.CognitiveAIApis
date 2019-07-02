@@ -1,5 +1,5 @@
 ﻿using CognitiveAIApis.Models;
-using CognitiveAIApis.Services.Helpers;
+using CognitiveAIApis.Infrastructure.Helpers;
 using CognitiveAIApis.Services.Models;
 using Microsoft.Azure.CognitiveServices.Vision.Face.Models;
 using Newtonsoft.Json;
